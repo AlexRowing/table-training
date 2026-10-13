@@ -17,16 +17,27 @@ public class Node<T>
 
     // ----------------------------------------------------------
     /**
-     * Create a new Node object.
+     * Create a new Node object with only data.
      * 
-     * @param data
-     *            - Object to be stored in Node
+     * @param data - Object to be stored in Node
      */
     // ~ Constructors ..........................................................
     public Node(T data)
     {
         this.data = data;
         next = null;
+    }
+    
+    // ----------------------------------------------------------
+    /**
+     * Create a new Node object with data and next.
+     * @param data - Object to be stored in Node
+     * @param next - Node Object being referenced next
+     */
+    public Node(T data, Node<T> next)
+    {
+        this.data = data;
+        this.next = next;
     }
 
 
