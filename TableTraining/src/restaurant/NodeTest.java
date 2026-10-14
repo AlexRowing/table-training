@@ -1,30 +1,33 @@
 package restaurant;
+
 import student.TestCase;
 
 // -------------------------------------------------------------------------
 /**
- *  Test cases for the Node class
+ * Test cases for the Node class
  * 
- *  @author sarah
- *  @version Oct 13, 2026
+ * @author sarah
+ * @version Oct 13, 2026
  */
-public class NodeTest extends TestCase
+public class NodeTest
+    extends TestCase
 {
-    //~ Fields ................................................................
+    // ~ Fields ................................................................
     private Node<String> one;
     private Node<Integer> two;
     private Node<Integer> three;
-    
-    //~ Set Up ..........................................................
+
+    // ~ Set Up ..........................................................
     public void setUp()
     {
         one = new Node<String>("One");
         two = new Node<Integer>(2);
         three = new Node<Integer>(3, two);
-        
+
     }
-    
-    //~Public  Methods ........................................................
+
+
+    // ~Public Methods ........................................................
     // ----------------------------------------------------------
     /**
      * Test next() when the next value is null
@@ -33,9 +36,10 @@ public class NodeTest extends TestCase
     {
         assertNull(one.next());
         assertNull(two.next());
-        
+
     }
-    
+
+
     // ----------------------------------------------------------
     /**
      * Test next() when the next value is not null
@@ -44,7 +48,8 @@ public class NodeTest extends TestCase
     {
         assertEquals(two, three.next());
     }
-    
+
+
     // ----------------------------------------------------------
     /**
      * Test data()
@@ -55,6 +60,28 @@ public class NodeTest extends TestCase
         assertEquals(2, two.data().intValue());
         assertEquals(3, three.data().intValue());
         assertEquals(2, three.next().data().intValue());
-        
+
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Test setData()
+     */
+    public void testSetData()
+    {
+        one.setData("Five");
+        assertEquals("Five", one.data());
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Test setNext()
+     */
+    public void testSetNext()
+    {
+        two.setNext(three);
+        assertEquals(3, two.next().data().intValue());
     }
 }

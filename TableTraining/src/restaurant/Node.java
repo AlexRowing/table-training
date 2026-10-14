@@ -19,7 +19,8 @@ public class Node<T>
     /**
      * Create a new Node object with only data.
      * 
-     * @param data - Object to be stored in Node
+     * @param data
+     *            - Object to be stored in Node
      */
     // ~ Constructors ..........................................................
     public Node(T data)
@@ -27,12 +28,16 @@ public class Node<T>
         this.data = data;
         next = null;
     }
-    
+
+
     // ----------------------------------------------------------
     /**
      * Create a new Node object with data and next.
-     * @param data - Object to be stored in Node
-     * @param next - Node Object being referenced next
+     * 
+     * @param data
+     *            - Object to be stored in Node
+     * @param next
+     *            - Node Object being referenced next
      */
     public Node(T data, Node<T> next)
     {
@@ -67,5 +72,31 @@ public class Node<T>
     public T data()
     {
         return data;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets a node's data
+     * 
+     * @param data
+     *            - object node holds
+     */
+    public void setData(T data)
+    {
+        this.data = data;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets a node's next
+     * 
+     * @param next
+     *            - next node in chain
+     */
+    public void setNext(Node<T> next)
+    {
+        this.next = next;
     }
 }
