@@ -77,6 +77,11 @@ public class LinkedChain<T>
         if (this.contains(item))
         {
             Node<T> curr = head;
+            if (curr.data() == item) {
+                curr = curr.next();
+                size--;
+                return item;
+            }
             while (curr.next() != null && curr.next().data() != item)
             {
                 curr = curr.next();
