@@ -83,7 +83,7 @@ public class LinkedChain<T>
                 size--;
                 return item;
             }
-            while (curr.next() != null && curr.next().data().equals(item))
+            while (curr.next() != null && !curr.next().data().equals(item))
             {
                 curr = curr.next();
             }
