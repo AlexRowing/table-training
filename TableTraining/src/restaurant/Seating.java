@@ -50,6 +50,12 @@ public class Seating
     }
 
 
+    public LinkedChain<Party> getWaitList()
+    {
+        return waitList;
+    }
+
+
     @Overloaded
     public boolean contains(int size, int time)
     {
@@ -70,9 +76,11 @@ public class Seating
         }
         throw new NoSuchElementException();
     }
-    
-    public void seatTables(int size) {
-        Party temp = compareParties(size);   
+
+
+    public void seatTables(int size)
+    {
+        Party temp = compareParties(size);
     }
 
 }
