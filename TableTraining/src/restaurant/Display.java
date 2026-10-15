@@ -297,6 +297,7 @@ public class Display
         return false;
     }
 
+
     /**
      * adds all of the total seats of the table array
      * 
@@ -305,7 +306,8 @@ public class Display
     public int totalSeats()
     {
         int numSeats = 0;
-        for (Table table : tableArray) {
+        for (Table table : tableArray)
+        {
             numSeats += table.getNumSeats();
         }
         return numSeats;

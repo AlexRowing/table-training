@@ -18,7 +18,7 @@ public class Main
     int currentMinute;
     Seating seating = new Seating();
     Display display = new Display();
-    private Scanner input;
+    Scanner input;
 
     // ~ Constructors ..........................................................
     public Main()
@@ -44,8 +44,11 @@ public class Main
         return time;
     }
 
+    public Display getDisplay() {
+        return display;
+    }
 
-    public void handleInput(Object args)
+    public String handleInput(Object args)
     {
         String userInput = input.nextLine();
 
@@ -55,76 +58,286 @@ public class Main
         }
         if (userInput.equals("2"))
         {
-            System.out.println("What is the size of the party");
-            int partySize = input.nextInt();
+            boolean valid = false;
             int totalSeats = display.totalSeats();
-            if (partySize <= totalSeats && partySize > 0)
+            System.out.println("What is the size of the party");
+            String partyTempSize = input.nextLine().trim();
+            int partySize = 0;
+            while (!valid)
             {
-                seating.addParty(partySize);
+                try
+                {
+                    partySize = Integer.parseInt(partyTempSize);
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a valid party size");
+                    partyTempSize = input.nextLine().trim();
+                    continue;
+                }
+                if (partySize > totalSeats)
+                {
+                    System.out.println("Party size is too large. Try again");
+                    partyTempSize = input.nextLine().trim();
+                    continue;
+                }
+                if (partySize <= 0)
+                {
+                    System.out.println(
+                        "Party size must be a positive whole number. "
+                            + "Please try again");
+                    partyTempSize = input.nextLine().trim();
+                    continue;
+                }
+                valid = true;
             }
-            else
-            {
-                throw new IllegalArgumentException(
-                    "Party is too large. Please" + " try again");
-            }
+            seating.addParty(partySize);
 
         }
         if (userInput.equals("3"))
         {
+            boolean valid = false;
             System.out.println("What is the size of the party");
-            int partySize = input.nextInt();
-            if (partySize > 0 && seating.contains(partySize))
+            String partyTempSize = input.nextLine().trim();
+            int partySize = 0;
+            while (!valid)
             {
-                seating.removeParty(input.nextInt());
+                try
+                {
+                    partySize = Integer.parseInt(partyTempSize);
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a valid party size");
+                    partyTempSize = input.nextLine().trim();
+                    continue;
+                }
+
+                if (!seating.contains(partySize))
+                {
+                    System.out.println(
+                        "No party exists with that size. Please try again");
+                    partyTempSize = input.nextLine().trim();
+                    continue;
+                }
+
+                valid = true;
             }
-            else
-            {
-                throw new IllegalArgumentException(
-                    "No party has that size"
-                        + " int the waitList. Please try again");
-            }
+
+            seating.removeParty(partySize);
 
         }
         if (userInput.equals("4"))
         {
-           System.out.println("What is the name of the reservation");
-            String resName = input.nextLine();
+            boolean valid1 = false;
+            boolean valid2 = false;
+            System.out.println("What is the name of the reservation");
+            String resName = input.nextLine().trim();
             System.out.println("What is the size of the reservation");
-            int resSize = input.nextInt();
+            String resTempSize = input.nextLine().trim();
+            int resSize = 0;
+            while (!valid1)
+            {
+                try
+                {
+                    resSize = Integer.parseInt(resTempSize);
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a valid size");
+                    resTempSize = input.nextLine();
+                    continue;
+                }
+                if (resSize <= 0)
+                {
+                    System.out.println("Size must be a positive whole number");
+                    resTempSize = input.nextLine();
+                    continue;
+                }
+                if (resSize > display.totalSeats())
+                {
+                    System.out.println("Size is too large. Please try again");
+                    resTempSize = input.nextLine();
+                    continue;
+                }
+                valid1 = true;
+            }
             System.out.println("What time is the reservation");
             String resTime = input.nextLine();
-            boolean valid = false;
             int resHour = 0;
             int resMinute = 0;
-            while(!valid) {
+            while (!valid2)
+            {
                 String[] timeParts = resTime.split(":");
-                if (timeParts.length != 2) {
+                if (timeParts.length != 2)
+                {
                     System.out.println("Please input a valid time");
                     resTime = input.nextLine();
                     continue;
                 }
-                if (timeParts[1].length() == 1) {
+                if (timeParts[1].length() == 1)
+                {
                     timeParts[1] += "0";
                 }
-                if (timeParts[0].length() > 2 || timeParts[1].length() > 2) {
+                if (timeParts[0].length() > 2 || timeParts[1].length() > 2)
+                {
                     System.out.println("Please enter a valid time");
                     resTime = input.nextLine();
                     continue;
                 }
-                try {
+                try
+                {
                     resHour = Integer.parseInt(timeParts[0]);
                     resMinute = Integer.parseInt(timeParts[1]);
                 }
-                catch (NumberFormatException e) {
+                catch (NumberFormatException e)
+                {
                     System.out.println("Please enter a valid time");
                     resTime = input.nextLine();
                     continue;
-                    
+
                 }
-                valid = true;
+                if (resHour >= 21 && resMinute > 0)
+                {
+                    System.out.println("Reservations must be before 9:01 pm");
+                    resTime = input.nextLine();
+                    continue;
+                }
+                if (resHour < 11)
+                {
+                    System.out.println("Reservations must be after 11:00 am");
+                    resTime = input.nextLine();
+                    continue;
+                }
+                valid2 = true;
             }
             seating.addReservation(resName, resSize, resHour, resMinute);
         }
+        if (userInput.equals("5"))
+        {
+            boolean valid1 = false;
+            boolean valid2 = false;
+            System.out.println("What is the name of the reservation");
+            String resName = input.nextLine().trim();
+            System.out.println("What is the size of the reservation");
+            String resTempSize = input.nextLine().trim();
+            int resSize = 0;
+            while (!valid1)
+            {
+                try
+                {
+                    resSize = Integer.parseInt(resTempSize);
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a valid size");
+                    resTempSize = input.nextLine();
+                    continue;
+                }
+                valid1 = true;
+            }
+            System.out.println("What time is the reservation");
+            String resTime = input.nextLine().trim();
+            int resHour = 0;
+            int resMinute = 0;
+            while (!valid2)
+            {
+                String[] timeParts = resTime.split(":");
+                if (timeParts.length != 2)
+                {
+                    System.out.println("Please input a valid time");
+                    resTime = input.nextLine();
+                    continue;
+                }
+                if (timeParts[1].length() == 1)
+                {
+                    timeParts[1] += "0";
+                }
+                if (timeParts[0].length() > 2 || timeParts[1].length() > 2)
+                {
+                    System.out.println("Please enter a valid time");
+                    resTime = input.nextLine().trim();
+                    continue;
+                }
+                try
+                {
+                    resHour = Integer.parseInt(timeParts[0]);
+                    resMinute = Integer.parseInt(timeParts[1]);
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a valid time");
+                    resTime = input.nextLine().trim();
+                    continue;
+
+                }
+                if (!seating.contains(resName, resSize, resHour, resMinute))
+                {
+                    System.out.println("Please enter a valid reservation");
+                    resTime = input.nextLine().trim();
+                    continue;
+                }
+                if (!seating.contains(resName, resSize, resHour, resMinute))
+                {
+                    System.out.println(
+                        "Reservation does not exist." + " Please try again");
+                    handleInput("5");
+
+                }
+                valid2 = true;
+            }
+
+            seating.removeReservation(resName, resSize, resHour, resMinute);
+
+        }
+        if (userInput.equals("6"))
+        {
+            System.out.println("What table would you like to clear?");
+            String tableTempNum = input.nextLine().trim();
+            int tableNum = 0;
+            boolean valid = false;
+            while (!valid)
+            {
+                if (tableTempNum.length() > 1)
+                {
+                    System.out.println("Please enter a valid table id only");
+                    tableTempNum = input.nextLine();
+                    continue;
+                }
+                try
+                {
+                    tableNum = Integer.parseInt(tableTempNum);
+                }
+                catch (NumberFormatException e)
+                {
+                    System.out.println("Please enter a valid table id");
+                    tableTempNum = input.nextLine().trim();
+                    continue;
+                }
+                if (!display.contains(tableNum))
+                {
+                    System.out
+                        .println("Table id doesnt exist please try again");
+                    tableTempNum = input.nextLine();
+                    continue;
+                }
+                if (display.getTable(tableNum).isEmpty())
+                {
+                    System.out
+                        .println("Table is already empty. Please try again");
+                    tableTempNum = input.nextLine();
+                    continue;
+                }
+                valid = true;
+            }
+            display.getTable(tableNum).setEmpty(true);
+            display.resetTableTime(tableNum);
+
+        }
+        if (userInput.equals("7")) {
+            
+        }
+        return userInput;
     }
 
 }

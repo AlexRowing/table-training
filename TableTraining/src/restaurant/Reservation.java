@@ -1,20 +1,17 @@
 package restaurant;
- 
+
 // -------------------------------------------------------------------------
 /**
- * A Reservation is a Party that has booked a specific time for today.
- * It keeps everything a Party already has (name and party size) and adds
- * the time the guests are expected, plus the table the system is holding
- * for them (if one has been blocked).
- *
- * Reservations go on the same generic wait list (linked chain) as walk-in
- * Parties. Because reservations can be made in any order during the day,
- * the host stand uses isDue(int) and isEarlierThan(Reservation) to move
- * them up in line as their time gets closer.
- *
- * Times are stored as minutes after midnight (for example, 6:30 PM = 1110)
- * so they can be compared and incremented with simple int math, the same
- * way the system advances the current time after each seating action.
+ * A Reservation is a Party that has booked a specific time for today. It keeps
+ * everything a Party already has (name and party size) and adds the time the
+ * guests are expected, plus the table the system is holding for them (if one
+ * has been blocked). Reservations go on the same generic wait list (linked
+ * chain) as walk-in Parties. Because reservations can be made in any order
+ * during the day, the host stand uses isDue(int) and isEarlierThan(Reservation)
+ * to move them up in line as their time gets closer. Times are stored as
+ * minutes after midnight (for example, 6:30 PM = 1110) so they can be compared
+ * and incremented with simple int math, the same way the system advances the
+ * current time after each seating action.
  *
  * @author Adarsh Nambiar
  * @version 2026.10.14
@@ -22,45 +19,45 @@ package restaurant;
 public class Reservation
     extends Party
 {
-    //~ Fields ................................................................
- 
+    // ~ Fields ................................................................
+
     /** Earliest hour (24-hour clock) a reservation can be booked for. */
     public static final int OPEN_HOUR = 11;
- 
+
     /** Hour (24-hour clock) the restaurant stops taking reservations. */
     public static final int CLOSE_HOUR = 22;
- 
+
     /** Value of the held table when no table is being held. */
     public static final int NO_TABLE = -1;
- 
+
     private static final int MINUTES_PER_HOUR = 60;
     private static final int HOURS_PER_DAY = 24;
- 
+
     /** Reservation time, in minutes after midnight. */
     private int reservationTime;
- 
+
     /** Number of the table blocked for this reservation, or NO_TABLE. */
     private int heldTable;
- 
-    //~ Constructors ..........................................................
- 
+
+    // ~ Constructors ..........................................................
+
     // ----------------------------------------------------------
     /**
-     * Creates a new Reservation for today. Reservations are only made
-     * day of, so only the hour and minute are needed.
+     * Creates a new Reservation for today. Reservations are only made day of,
+     * so only the hour and minute are needed.
      *
      * @param name
      *            the name the reservation is under
      * @param size
      *            the number of guests (must be at least 1)
      * @param hour
-     *            the hour of the reservation on a 24-hour clock
-     *            (for example, 18 for 6 PM)
+     *            the hour of the reservation on a 24-hour clock (for example,
+     *            18 for 6 PM)
      * @param minute
      *            the minute of the reservation (0 to 59)
      * @throws IllegalArgumentException
-     *             if the size is less than 1 or the time is outside
-     *             reservation hours ("not valid reservation")
+     *             if the size is less than 1 or the time is outside reservation
+     *             hours ("not valid reservation")
      */
     public Reservation(String name, int size, int hour, int minute)
     {
@@ -72,9 +69,10 @@ public class Reservation
         reservationTime = toMinutes(hour, minute);
         heldTable = NO_TABLE;
     }
- 
-    //~Public  Methods ........................................................
- 
+
+    // ~Public Methods ........................................................
+
+
     // ----------------------------------------------------------
     /**
      * Gets the reservation time in minutes after midnight.
@@ -85,8 +83,8 @@ public class Reservation
     {
         return reservationTime;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Gets the hour of the reservation on a 24-hour clock.
@@ -97,8 +95,8 @@ public class Reservation
     {
         return reservationTime / MINUTES_PER_HOUR;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Gets the minute of the reservation.
@@ -109,12 +107,12 @@ public class Reservation
     {
         return reservationTime % MINUTES_PER_HOUR;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
-     * Gets the reservation time formatted for the console, such as
-     * "6:30 PM". Used for messages like "Table is reserved for time x:xx".
+     * Gets the reservation time formatted for the console, such as "6:30 PM".
+     * Used for messages like "Table is reserved for time x:xx".
      *
      * @return the formatted reservation time
      */
@@ -122,8 +120,8 @@ public class Reservation
     {
         return formatTime(reservationTime);
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Checks whether this reservation's time has arrived, meaning it should
@@ -137,12 +135,12 @@ public class Reservation
     {
         return currentTime >= reservationTime;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
-     * Gets how many minutes remain until this reservation. A negative
-     * value means the reservation time has already passed.
+     * Gets how many minutes remain until this reservation. A negative value
+     * means the reservation time has already passed.
      *
      * @param currentTime
      *            the current time in minutes after midnight
@@ -152,12 +150,12 @@ public class Reservation
     {
         return reservationTime - currentTime;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
-     * Checks whether this reservation is earlier in the day than another
-     * one. Used to order reservations in line by time.
+     * Checks whether this reservation is earlier in the day than another one.
+     * Used to order reservations in line by time.
      *
      * @param other
      *            the reservation to compare against
@@ -167,8 +165,8 @@ public class Reservation
     {
         return other != null && reservationTime < other.reservationTime;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Records that a table is being blocked (held) for this reservation.
@@ -186,8 +184,8 @@ public class Reservation
         }
         heldTable = tableNumber;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Releases the table held for this reservation, for example when the
@@ -197,8 +195,8 @@ public class Reservation
     {
         heldTable = NO_TABLE;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Gets the number of the table held for this reservation.
@@ -209,8 +207,8 @@ public class Reservation
     {
         return heldTable;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Checks whether a table is currently held for this reservation.
@@ -221,15 +219,15 @@ public class Reservation
     {
         return heldTable != NO_TABLE;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Two reservations are equal if they are under the same name (ignoring
-     * case), for the same number of guests, at the same time. A plain
-     * Party is never equal to a Reservation. This lets the wait list find
-     * and remove the right entry when a reservation is cancelled, while
-     * still allowing duplicates to be stored.
+     * case), for the same number of guests, at the same time. A plain Party is
+     * never equal to a Reservation. This lets the wait list find and remove the
+     * right entry when a reservation is cancelled, while still allowing
+     * duplicates to be stored.
      *
      * @param obj
      *            the object to compare to
@@ -251,8 +249,8 @@ public class Reservation
             && getSize() == other.getSize()
             && namesMatch(getName(), other.getName());
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Gets a hash code consistent with equals().
@@ -268,33 +266,33 @@ public class Reservation
         result = 31 * result + reservationTime;
         return result;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
-     * Gets a readable description for the host stand, such as
-     * "Smith (party of 4) - 6:30 PM [table 3 held]".
+     * Gets a readable description for the host stand, such as "Smith (party of
+     * 4) - 6:30 PM [table 3 held]".
      *
      * @return a description of this reservation
      */
     @Override
     public String toString()
     {
-        String result = getName() + " (party of " + getSize() + ") - "
-            + getFormattedTime();
+        String result =
+            getName() + " (party of " + getSize() + ") - " + getFormattedTime();
         if (hasHeldTable())
         {
             result += " [table " + heldTable + " held]";
         }
         return result;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
-     * Checks whether an hour and minute make a valid reservation time:
-     * a real clock time that falls within reservation hours
-     * (from OPEN_HOUR up to, but not including, CLOSE_HOUR).
+     * Checks whether an hour and minute make a valid reservation time: a real
+     * clock time that falls within reservation hours (from OPEN_HOUR up to, but
+     * not including, CLOSE_HOUR).
      *
      * @param hour
      *            the hour on a 24-hour clock
@@ -311,13 +309,13 @@ public class Reservation
         }
         return hour >= OPEN_HOUR && hour < CLOSE_HOUR;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Checks whether an hour and minute make a valid reservation time for
-     * today, given the current time. Since reservations are only made day
-     * of, a time that has already passed is not valid.
+     * today, given the current time. Since reservations are only made day of, a
+     * time that has already passed is not valid.
      *
      * @param hour
      *            the hour on a 24-hour clock
@@ -332,8 +330,8 @@ public class Reservation
         return isValidTime(hour, minute)
             && toMinutes(hour, minute) >= currentTime;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Converts an hour and minute into minutes after midnight.
@@ -348,12 +346,12 @@ public class Reservation
     {
         return hour * MINUTES_PER_HOUR + minute;
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
-     * Formats a time in minutes after midnight as a 12-hour clock string,
-     * such as "6:30 PM". Can also be used to show the current time.
+     * Formats a time in minutes after midnight as a 12-hour clock string, such
+     * as "6:30 PM". Can also be used to show the current time.
      *
      * @param minutes
      *            the time in minutes after midnight
@@ -367,8 +365,8 @@ public class Reservation
         String suffix = hour24 < 12 ? "AM" : "PM";
         return String.format("%d:%02d %s", hour12, minute, suffix);
     }
- 
- 
+
+
     // ----------------------------------------------------------
     /**
      * Compares two names, ignoring case and handling nulls.
@@ -381,6 +379,5 @@ public class Reservation
         }
         return a.equalsIgnoreCase(b);
     }
- 
+
 }
- 
