@@ -191,7 +191,7 @@ public class Main
                 {
                     partySize = Integer.parseInt(partyTempSize);
                 }
-                catch (NumberFormatException e)
+                catch (Exception e)
                 {
                     System.out.println("Please enter a valid party size");
                     partyTempSize = input.nextLine().trim();
