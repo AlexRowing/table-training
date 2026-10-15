@@ -79,7 +79,7 @@ public class LinkedChain<T>
             Node<T> curr = head;
             if (curr.data().equals(item))
             {
-                curr = curr.next();
+                head = head.next();
                 size--;
                 return item;
             }
