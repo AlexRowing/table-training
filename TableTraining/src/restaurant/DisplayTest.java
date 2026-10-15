@@ -357,6 +357,42 @@ public class DisplayTest
 
 
     /**
+     * test setTableTime() when the table does not exist
+     */
+    public void testSetTableTimeAbsent()
+    {
+        Exception myIAE = null;
+        try
+        {
+            display.setTableTime(5, 20);
+        }
+        catch (IllegalArgumentException iae)
+        {
+            myIAE = iae;
+        }
+        assertNotNull(myIAE);
+    }
+
+
+    /**
+     * test resetTableTime() when the table does not exist
+     */
+    public void testResetTableTimeAbsent()
+    {
+        Exception myIAE = null;
+        try
+        {
+            display.resetTableTime(5);
+        }
+        catch (IllegalArgumentException iae)
+        {
+            myIAE = iae;
+        }
+        assertNotNull(myIAE);
+    }
+
+
+    /**
      * test updateTableTimes() only updates occupied tables
      */
     public void testUpdateTableTimes()
@@ -384,5 +420,24 @@ public class DisplayTest
     public void testContainsFalse()
     {
         assertFalse(display.contains(5));
+    }
+
+
+    /**
+     * test totalSeats()
+     */
+    public void testTotalSeats()
+    {
+        assertEquals(6, display.totalSeats());
+    }
+
+
+    /**
+     * test totalSeats() still counts the original tables when combined
+     */
+    public void testTotalSeatsCombined()
+    {
+        display.combineTables(1, 2);
+        assertEquals(6, display.totalSeats());
     }
 }
