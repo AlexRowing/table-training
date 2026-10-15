@@ -112,7 +112,7 @@ public class LinkedChain<T>
         Node<T> curr = head;
         while (curr != null)
         {
-            if (curr.data() == item)
+            if (curr.data().equals(item))
             {
                 return true;
             }
