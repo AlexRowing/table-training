@@ -14,6 +14,8 @@ import java.util.Scanner;
 public class Main
 {
     // ~ Fields ................................................................
+    private static final int OPEN_HOUR = 11;
+    private static final int CLOSE_HOUR = 22;
     int currentHour;
     int currentMinute;
     Seating seating = new Seating();
@@ -24,6 +26,8 @@ public class Main
     public Main()
     {
         input = new Scanner(System.in);
+        currentHour = OPEN_HOUR;
+        currentMinute = 0;
         /**
          * this fills the Display arrayList with 6 tables of random numSeats
          * from 2 to 6
@@ -38,17 +42,93 @@ public class Main
 
 
     // ~Public Methods ........................................................
-    public String getTime()
+   public static void main(String[] args) {
+       Main main = new Main();
+       main.run();
+   }
+    
+    public void run()
     {
-        String time = currentHour + ":" + currentMinute;
-        return time;
+        printTitle();
+        while (isOpen())
+        {
+            System.out.println();
+            System.out.println("Current time: " + getTime());
+            printMenu();
+            System.out.print("Choose an option: ");
+            String choice = handleInput().trim();
+            if (!choice.matches("[1-8]"))
+            {
+                System.out.println("Please enter a number from 1 to 8.");
+
+            }
+        }
+        System.out.println("The restaurant is now closed. Great Job!");
     }
 
-    public Display getDisplay() {
+
+    public void printTitle()
+    {
+        System.out.println(
+            "___________     ___.   .__           ___________         "
+                + "    .__       .__\n"
+                + "\\__    ___/____ \\_ |__ |  |   ____   \\__    ___/"
+                + "___________  |__| ____ |__| ____    ____\n"
+                + "  |    |  \\__  \\ | __ \\|  | _/ __ \\    |    |  "
+                + "\\_  __ \\__  \\ |  |/    \\|  |/    \\  / ___\\\n"
+                + "  |    |   / __ \\| \\_\\ \\  |_\\  ___/    |    |   "
+                + "|  | \\// __ \\|  |   |  \\  |   |  \\/ /_/  >\n"
+                + "  |____|  (____  /___  /____/\\___  >   |____|   |__|"
+                + "  (____  /__|___|  /__|___|  /\\___  /\n"
+                + "               \\/    \\/          \\/                  "
+                + "      \\/        \\/        \\//_____/");
+    }
+
+
+    public void printMenu()
+    {
+        System.out.println(
+            " ____________________________\n"
+                + "|          Host Menu:        |\n"
+                + "|----------------------------|\n"
+                + "| 1. Wait List               |\n"
+                + "| 2. Add Party               |\n"
+                + "| 3. Cancel Party            |\n"
+                + "| 4. Add Reservation         |\n"
+                + "| 5. Cancel Reservation      |\n"
+                + "| 6. Clear Table             |\n"
+                + "| 7. Seat Table              |\n"
+                + "| 8. Pass Time               |\n"
+                + " ---------------------------- ");
+    }
+
+
+    public String getTime()
+    {
+        String currentTime = "";
+        if (currentMinute > 0) {
+            currentTime = currentHour + ":" + currentMinute;
+        }
+        else {
+            currentTime = currentHour + ":" + "00";
+        }
+        return currentTime;
+    }
+
+
+    public boolean isOpen()
+    {
+        return currentHour < CLOSE_HOUR;
+    }
+
+
+    public Display getDisplay()
+    {
         return display;
     }
 
-    public String handleInput(Object args)
+
+    public String handleInput()
     {
         String userInput = input.nextLine();
 
@@ -215,80 +295,78 @@ public class Main
         }
         if (userInput.equals("5"))
         {
-            boolean valid1 = false;
-            boolean valid2 = false;
-            System.out.println("What is the name of the reservation");
-            String resName = input.nextLine().trim();
-            System.out.println("What is the size of the reservation");
-            String resTempSize = input.nextLine().trim();
-            int resSize = 0;
-            while (!valid1)
+            boolean done = false;
+            restart: while (!done)
             {
-                try
+                boolean valid1 = false;
+                boolean valid2 = false;
+                System.out.println("What is the name of the reservation");
+                String resName = input.nextLine().trim();
+                System.out.println("What is the size of the reservation");
+                String resTempSize = input.nextLine().trim();
+                int resSize = 0;
+                while (!valid1)
                 {
-                    resSize = Integer.parseInt(resTempSize);
+                    try
+                    {
+                        resSize = Integer.parseInt(resTempSize);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        System.out.println("Please enter a valid size");
+                        resTempSize = input.nextLine();
+                        continue;
+                    }
+                    valid1 = true;
                 }
-                catch (NumberFormatException e)
+                System.out.println("What time is the reservation");
+                String resTime = input.nextLine().trim();
+                int resHour = 0;
+                int resMinute = 0;
+                while (!valid2)
                 {
-                    System.out.println("Please enter a valid size");
-                    resTempSize = input.nextLine();
-                    continue;
+                    String[] timeParts = resTime.split(":");
+                    if (timeParts.length != 2)
+                    {
+                        System.out.println("Please input a valid time");
+                        resTime = input.nextLine();
+                        continue;
+                    }
+                    if (timeParts[1].length() == 1)
+                    {
+                        timeParts[1] += "0";
+                    }
+                    if (timeParts[0].length() > 2 || timeParts[1].length() > 2)
+                    {
+                        System.out.println("Please enter a valid time");
+                        resTime = input.nextLine().trim();
+                        continue;
+                    }
+                    try
+                    {
+                        resHour = Integer.parseInt(timeParts[0]);
+                        resMinute = Integer.parseInt(timeParts[1]);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        System.out.println("Please enter a valid time");
+                        resTime = input.nextLine().trim();
+                        continue;
+
+                    }
+                    if (!seating.contains(resName, resSize, resHour, resMinute))
+                    {
+                        System.out.println(
+                            "Reservation does not exist." + " Starting over. ");
+                        continue restart;
+
+                    }
+                    valid2 = true;
                 }
-                valid1 = true;
+
+                seating.removeReservation(resName, resSize, resHour, resMinute);
+                done = true;
             }
-            System.out.println("What time is the reservation");
-            String resTime = input.nextLine().trim();
-            int resHour = 0;
-            int resMinute = 0;
-            while (!valid2)
-            {
-                String[] timeParts = resTime.split(":");
-                if (timeParts.length != 2)
-                {
-                    System.out.println("Please input a valid time");
-                    resTime = input.nextLine();
-                    continue;
-                }
-                if (timeParts[1].length() == 1)
-                {
-                    timeParts[1] += "0";
-                }
-                if (timeParts[0].length() > 2 || timeParts[1].length() > 2)
-                {
-                    System.out.println("Please enter a valid time");
-                    resTime = input.nextLine().trim();
-                    continue;
-                }
-                try
-                {
-                    resHour = Integer.parseInt(timeParts[0]);
-                    resMinute = Integer.parseInt(timeParts[1]);
-                }
-                catch (NumberFormatException e)
-                {
-                    System.out.println("Please enter a valid time");
-                    resTime = input.nextLine().trim();
-                    continue;
-
-                }
-                if (!seating.contains(resName, resSize, resHour, resMinute))
-                {
-                    System.out.println("Please enter a valid reservation");
-                    resTime = input.nextLine().trim();
-                    continue;
-                }
-                if (!seating.contains(resName, resSize, resHour, resMinute))
-                {
-                    System.out.println(
-                        "Reservation does not exist." + " Please try again");
-                    handleInput("5");
-
-                }
-                valid2 = true;
-            }
-
-            seating.removeReservation(resName, resSize, resHour, resMinute);
-
         }
         if (userInput.equals("6"))
         {
@@ -334,9 +412,39 @@ public class Main
             display.resetTableTime(tableNum);
 
         }
-        if (userInput.equals("7")) {
-            
+        if (userInput.equals("7"))
+        {
+            for (Table table : display.getTables())
+            {
+                if (table.getTimeSat() == 0 && !table.isEmpty())
+                {
+                    System.out.println(
+                        "Party for " + table.getNumPeople()
+                            + " was sat at Table " + table.getTableID());
+                }
+            }
+            if (currentMinute == 50)
+            {
+                currentMinute = 0;
+                currentHour += 1;
+            }
+            else
+            {
+                currentMinute += 10;
+            }
         }
+        if (userInput.equals("8")) {
+            if (currentMinute == 50)
+            {
+                currentMinute = 0;
+                currentHour += 1;
+            }
+            else
+            {
+                currentMinute += 10;
+            }
+        }
+
         return userInput;
     }
 
