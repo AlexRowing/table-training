@@ -56,7 +56,7 @@ public class Seating
     }
 
 
-    @Overloaded
+    //Overloaded
     public boolean contains(String name, int size, int hour, int minute)
     {
         Party reservation = new Reservation(name, size, hour, minute);
@@ -68,11 +68,19 @@ public class Seating
     {
         for (int i = size; i > 0; i--)
         {
-            Party party = new Party("", i);
-            if (waitList.contains(party))
+            Party party = new Party("", -1);
+            Node<Party> curr = waitList.getHead();
+            while (curr != null)
             {
-                return waitList.remove(party);
+                if (curr.data().getSize() == i)
+                {
+                    party = curr.data();
+                    return waitList.remove(party);
+                    
+                }
+                curr = curr.next();
             }
+
         }
         throw new IllegalArgumentException("Invalid party size, try again");
     }
@@ -109,7 +117,7 @@ public class Seating
             for (Table table : seatingArray)
             {
                 Party tempParty = compareParties(table.getNumSeats());
-                table.setNumPeople(tempParty.getNumPeople());
+                table.setNumPeople(tempParty.getSize());
                 table.setEmpty(false);
                 seatingArray.remove(seatingArray.indexOf(table));
             }

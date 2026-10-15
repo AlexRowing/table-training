@@ -52,14 +52,18 @@ public class Main
 
 
     // ~Public Methods ........................................................
-    /** Allows the program and main.java to be ran as a java application 
+    /**
+     * Allows the program and main.java to be ran as a java application
      * 
-     * @param args is the collection of all the user inputs*/
+     * @param args
+     *            is the collection of all the user inputs
+     */
     public static void main(String[] args)
     {
         Main main = new Main();
         main.run();
     }
+
 
     /** The loop that keeps the program running until the restaurant closes */
     public void run()
@@ -72,8 +76,10 @@ public class Main
             printMenu();
             System.out.print("Choose an option: ");
             String choice = handleInput().trim();
-            /** Prints the menu of options for the user and checks if the 
-             * user input is within the options of the menu */
+            /**
+             * Prints the menu of options for the user and checks if the user
+             * input is within the options of the menu
+             */
             if (!choice.matches("[1-8]"))
             {
                 System.out.println("Please enter a number from 1 to 8.");
@@ -82,6 +88,7 @@ public class Main
         }
         System.out.println("The restaurant is now closed. Great Job!");
     }
+
 
     /** prints the title at the beginning of the program */
     public void printTitle()
@@ -101,6 +108,7 @@ public class Main
                 + "      \\/        \\/        \\//_____/");
     }
 
+
     /** prints the menu in the beginning of each loop */
     public void printMenu()
     {
@@ -119,6 +127,7 @@ public class Main
                 + " ---------------------------- ");
     }
 
+
     /** @return current time in the program */
     public String getTime()
     {
@@ -134,22 +143,30 @@ public class Main
         return currentTime;
     }
 
+
     /** @return if the restaurant is open */
     public boolean isOpen()
     {
         return currentHour < CLOSE_HOUR;
     }
 
-    /** @return The display object that is stored in the main class.
-     * Allows for other classes to access the display and its methods */
+
+    /**
+     * @return The display object that is stored in the main class. Allows for
+     *             other classes to access the display and its methods
+     */
     public Display getDisplay()
     {
         return display;
     }
 
-    /** Takes the inputs from the user and calls methods or checks for bad input 
-     * and prompts the user to try again 
-     * @return the most recent valid user input */
+
+    /**
+     * Takes the inputs from the user and calls methods or checks for bad input
+     * and prompts the user to try again
+     * 
+     * @return the most recent valid user input
+     */
     public String handleInput()
     {
         String userInput = input.nextLine();
@@ -158,10 +175,12 @@ public class Main
         {
             System.out.println(seating.getWaitList());
         }
-        /** User input for add Party*/
+        /** User input for add Party */
         if (userInput.equals("2"))
         {
             boolean valid = false;
+            System.out.println("What is the name of the party");
+            String partyName = input.nextLine().trim();
             int totalSeats = display.totalSeats();
             System.out.println("What is the size of the party");
             String partyTempSize = input.nextLine().trim();
@@ -194,41 +213,48 @@ public class Main
                 }
                 valid = true;
             }
-            seating.addParty(partySize);
+            seating.addParty(partyName, partySize);
 
         }
         /** User input for removing a party from wait List */
         if (userInput.equals("3"))
         {
-            boolean valid = false;
-            System.out.println("What is the size of the party");
-            String partyTempSize = input.nextLine().trim();
-            int partySize = 0;
-            while (!valid)
+            boolean done = false;
+            restart: while (!done)
             {
-                try
+                boolean valid = false;
+                System.out.println("What is the name of the party");
+                String partyName = input.nextLine().trim();
+                System.out.println("What is the size of the party");
+                String partyTempSize = input.nextLine().trim();
+                int partySize = 0;
+                while (!valid)
                 {
-                    partySize = Integer.parseInt(partyTempSize);
-                }
-                catch (NumberFormatException e)
-                {
-                    System.out.println("Please enter a valid party size");
-                    partyTempSize = input.nextLine().trim();
-                    continue;
+                    try
+                    {
+                        partySize = Integer.parseInt(partyTempSize);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        System.out.println("Please enter a valid party size");
+                        partyTempSize = input.nextLine().trim();
+                        continue;
+                    }
+
+                    if (!seating.contains(partyName, partySize))
+                    {
+                        System.out.println(
+                            "That party doesn't exist. Starting over: ");
+                        continue restart;
+                    }
+
+                    valid = true;
                 }
 
-                if (!seating.contains(partySize))
-                {
-                    System.out.println(
-                        "No party exists with that size. Please try again");
-                    partyTempSize = input.nextLine().trim();
-                    continue;
-                }
+                seating.removeParty(partyName, partySize);
+                done = true;
 
-                valid = true;
             }
-
-            seating.removeParty(partySize);
 
         }
         if (userInput.equals("4"))

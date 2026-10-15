@@ -299,17 +299,4 @@ public class Display
 
 
     /**
-     * adds all of the total seats of the table array
-     * 
-     * @return int total table seats in restaurant
-     */
-    public int totalSeats()
-    {
-        int numSeats = 0;
-        for (Table table : tableArray)
-        {
-            numSeats += table.getNumSeats();
-        }
-        return numSeats;
-    }
-}
+     * adds all of the total seats
