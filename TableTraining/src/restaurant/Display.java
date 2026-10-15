@@ -45,8 +45,8 @@ public class Display
 
 
     /**
-     * Gets the list of tables currently in use. If tables are combined this
-     * is the combined list, otherwise it is the original list
+     * Gets the list of tables currently in use. If tables are combined this is
+     * the combined list, otherwise it is the original list
      *
      * @return the current table list
      */
@@ -78,8 +78,7 @@ public class Display
                 return table;
             }
         }
-        throw new IllegalArgumentException(
-            "Please enter a valid table ID");
+        throw new IllegalArgumentException("Please enter a valid table ID");
     }
 
 
@@ -172,9 +171,8 @@ public class Display
         }
         Table first = getTable(tableID1);
         Table second = getTable(tableID2);
-        Table combined = new Table(
-            tableID1,
-            first.getNumSeats() + second.getNumSeats());
+        Table combined =
+            new Table(tableID1, first.getNumSeats() + second.getNumSeats());
 
         combinedTableArray = new ArrayList<Table>();
         for (Table table : tableArray)
@@ -199,9 +197,8 @@ public class Display
      */
     public void separateTables(int tableID)
     {
-        if (combinedTableArray == null
-            || combinedTableArray.get(combinedTableArray.size() - 1)
-                .getTableID() != tableID)
+        if (combinedTableArray == null || combinedTableArray
+            .get(combinedTableArray.size() - 1).getTableID() != tableID)
         {
             throw new IllegalArgumentException("Table is not combined");
         }
@@ -298,5 +295,19 @@ public class Display
             }
         }
         return false;
+    }
+
+    /**
+     * adds all of the total seats of the table array
+     * 
+     * @return int total table seats in restaurant
+     */
+    public int totalSeats()
+    {
+        int numSeats = 0;
+        for (Table table : tableArray) {
+            numSeats += table.getNumSeats();
+        }
+        return numSeats;
     }
 }
