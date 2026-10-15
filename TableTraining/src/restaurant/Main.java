@@ -34,12 +34,20 @@ public class Main
         }
         if (userInput.equals("2")) {
             System.out.println("What is the size of the party");
-            userInput = input.nextLine();
-            //
+            seating.addParty(input.nextInt());
+            
         }
         if (userInput.equals("3")) {
             System.out.println("What is the size of the party");
-            userInput = input.nextLine();
+            seating.removeParty(input.nextInt());
+        }
+        if (userInput.equals("4")) {
+            System.out.println("What is the size of the reservation");
+            int resSize = input.nextInt();
+            System.out.println("What time is the reservation");
+            int resTime = input.nextInt();
+            seating.addReservation(resSize, resTime);
+            
         }
     }
     
