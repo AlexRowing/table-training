@@ -81,6 +81,8 @@ public class LinkedChainTest
         myChain.add("Goodbye");
         myChain.add("See you later");
         assertEquals("Goodbye", myChain.remove("Goodbye"));
+        assertEquals("Hello", myChain.getHead().data());
+        assertEquals("See you later", myChain.getHead().next().data());
         assertEquals(2, myChain.getSize());
     }
 
