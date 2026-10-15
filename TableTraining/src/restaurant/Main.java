@@ -3,10 +3,9 @@ package restaurant;
 import java.util.Scanner;
 
 /**
- * // -------------------------------------------------------------------------
- * /** Write a one-sentence summary of your class here. Follow it with
- * additional details about its purpose, what abstraction it represents, and how
- * to use it.
+ * Main class implements the display object and seating object. The main class
+ * handles input through the static void main method and while the time in the
+ * program is between 11:00 am and 10:00 pm.
  * 
  * @author adambergmaier
  * @version Oct 15, 2026
@@ -14,15 +13,26 @@ import java.util.Scanner;
 public class Main
 {
     // ~ Fields ................................................................
+    /** The earliest time that the program can run */
     private static final int OPEN_HOUR = 11;
+    /** The latest hour the program can run */
     private static final int CLOSE_HOUR = 22;
+    /** current hour within the program */
     int currentHour;
+    /** minutes of the current time in the program */
     int currentMinute;
+    /** Creates the seating object to be called for logic */
     Seating seating = new Seating();
+    /** Creates the display object to access the tables and display tables */
     Display display = new Display();
+    /** input takes the input provided by the user */
     Scanner input;
 
     // ~ Constructors ..........................................................
+    /**
+     * Constructor of the main class to be initialized at the beginning of the
+     * program
+     */
     public Main()
     {
         input = new Scanner(System.in);
@@ -42,11 +52,16 @@ public class Main
 
 
     // ~Public Methods ........................................................
-   public static void main(String[] args) {
-       Main main = new Main();
-       main.run();
-   }
-    
+    /** Allows the program and main.java to be ran as a java application 
+     * 
+     * @param args is the collection of all the user inputs*/
+    public static void main(String[] args)
+    {
+        Main main = new Main();
+        main.run();
+    }
+
+    /** The loop that keeps the program running until the restaurant closes */
     public void run()
     {
         printTitle();
@@ -57,6 +72,8 @@ public class Main
             printMenu();
             System.out.print("Choose an option: ");
             String choice = handleInput().trim();
+            /** Prints the menu of options for the user and checks if the 
+             * user input is within the options of the menu */
             if (!choice.matches("[1-8]"))
             {
                 System.out.println("Please enter a number from 1 to 8.");
@@ -66,7 +83,7 @@ public class Main
         System.out.println("The restaurant is now closed. Great Job!");
     }
 
-
+    /** prints the title at the beginning of the program */
     public void printTitle()
     {
         System.out.println(
@@ -84,7 +101,7 @@ public class Main
                 + "      \\/        \\/        \\//_____/");
     }
 
-
+    /** prints the menu in the beginning of each loop */
     public void printMenu()
     {
         System.out.println(
@@ -102,40 +119,46 @@ public class Main
                 + " ---------------------------- ");
     }
 
-
+    /** @return current time in the program */
     public String getTime()
     {
         String currentTime = "";
-        if (currentMinute > 0) {
+        if (currentMinute > 0)
+        {
             currentTime = currentHour + ":" + currentMinute;
         }
-        else {
+        else
+        {
             currentTime = currentHour + ":" + "00";
         }
         return currentTime;
     }
 
-
+    /** @return if the restaurant is open */
     public boolean isOpen()
     {
         return currentHour < CLOSE_HOUR;
     }
 
-
+    /** @return The display object that is stored in the main class.
+     * Allows for other classes to access the display and its methods */
     public Display getDisplay()
     {
         return display;
     }
 
-
+    /** Takes the inputs from the user and calls methods or checks for bad input 
+     * and prompts the user to try again 
+     * @return the most recent valid user input */
     public String handleInput()
     {
         String userInput = input.nextLine();
-
+        /** User input for Wait List */
         if (userInput.equals("1"))
         {
             System.out.println(seating.getWaitList());
         }
+        /** User input for add Party*/
         if (userInput.equals("2"))
         {
             boolean valid = false;
@@ -174,6 +197,7 @@ public class Main
             seating.addParty(partySize);
 
         }
+        /** User input for removing a party from wait List */
         if (userInput.equals("3"))
         {
             boolean valid = false;
@@ -433,7 +457,8 @@ public class Main
                 currentMinute += 10;
             }
         }
-        if (userInput.equals("8")) {
+        if (userInput.equals("8"))
+        {
             if (currentMinute == 50)
             {
                 currentMinute = 0;
