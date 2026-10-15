@@ -466,7 +466,7 @@ public class Main
         {
             for (Table table : display.getTables())
             {
-                if (table.getTimeSat() == 0 && !table.isEmpty())
+                if (table.getTimeSat() == 0 && table.isEmpty())
                 {
                     System.out.println(
                         "Party for " + table.getNumPeople()
