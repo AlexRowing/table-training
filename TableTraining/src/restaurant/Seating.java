@@ -56,7 +56,7 @@ public class Seating
     }
 
 
-    //Overloaded
+    // Overloaded
     public boolean contains(String name, int size, int hour, int minute)
     {
         Party reservation = new Reservation(name, size, hour, minute);
@@ -76,7 +76,6 @@ public class Seating
                 {
                     party = curr.data();
                     return waitList.remove(party);
-                    
                 }
                 curr = curr.next();
             }
@@ -106,11 +105,12 @@ public class Seating
                 {
                     minIndex = j;
                 }
+                Table temp = seatingArray.get(i);
+                seatingArray.set(i, seatingArray.get(minIndex));
+                seatingArray.set(minIndex, temp);
             }
             // Swap the found min with the current position
-            Table temp = seatingArray.get(i);
-            seatingArray.set(i, seatingArray.get(minIndex));
-            seatingArray.set(minIndex, temp);
+
         }
         while (seatingArray.size() != 0)
         {
@@ -121,6 +121,7 @@ public class Seating
                 table.setEmpty(false);
                 seatingArray.remove(seatingArray.indexOf(table));
             }
+            break;
 
         }
     }

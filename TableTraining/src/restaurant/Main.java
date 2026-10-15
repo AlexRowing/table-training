@@ -466,8 +466,9 @@ public class Main
         {
             for (Table table : display.getTables())
             {
-                if (table.getTimeSat() == 0 && !table.isEmpty())
+                if (table.isEmpty() && !table.isReserved())
                 {
+                    seating.seatTables(display.getTables());
                     System.out.println(
                         "Party for " + table.getNumPeople()
                             + " was sat at Table " + table.getTableID());

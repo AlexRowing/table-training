@@ -1,26 +1,28 @@
 package restaurant;
 
 /**
- * A group of guests waiting to be seated. Walk-ins are plain Parties,
- * and Reservation extends this to add a booked time.
+ * A group of guests waiting to be seated. Walk-ins are plain Parties, and
+ * Reservation extends this to add a booked time.
  *
  * @author Adarsh Nambiar
  * @version 2026.10.15
  */
 public class Party
 {
-    //~ Fields ................................................................
+    // ~ Fields ................................................................
 
     private String name;
     private int size;
 
-    //~ Constructors ..........................................................
+    // ~ Constructors ..........................................................
 
     /**
      * Creates a new party.
      *
-     * @param name the name the party is under
-     * @param size how many people are in the party
+     * @param name
+     *            the name the party is under
+     * @param size
+     *            how many people are in the party
      */
     public Party(String name, int size)
     {
@@ -30,14 +32,14 @@ public class Party
         }
         if (size < 1)
         {
-            throw new IllegalArgumentException(
-                "Party size must be at least 1");
+            throw new IllegalArgumentException("Party size must be at least 1");
         }
         this.name = name.trim();
         this.size = size;
     }
 
-    //~Public  Methods ........................................................
+    // ~Public Methods ........................................................
+
 
     /**
      * Gets the name the party is under.
@@ -64,7 +66,8 @@ public class Party
     /**
      * Checks if the whole party can sit at a table with this many seats.
      *
-     * @param seats the table's seating capacity
+     * @param seats
+     *            the table's seating capacity
      * @return true if everyone fits
      */
     public boolean fitsAt(int seats)
@@ -76,7 +79,8 @@ public class Party
     /**
      * Two parties are equal if they have the same name and size.
      *
-     * @param obj the object to compare to
+     * @param obj
+     *            the object to compare to
      * @return true if obj is the same party
      */
     @Override
@@ -92,7 +96,8 @@ public class Party
             return false;
         }
         Party other = (Party)obj;
-        return size == other.size && name.equalsIgnoreCase(other.name);
+        return size == other.getSize()
+            && name.equalsIgnoreCase(other.getName());
     }
 
 

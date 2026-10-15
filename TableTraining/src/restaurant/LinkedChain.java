@@ -74,7 +74,7 @@ public class LinkedChain<T>
         {
             throw new NoSuchElementException();
         }
-        if (this.contains(item))
+        if (contains(item))
         {
             Node<T> curr = head;
             if (curr.data().equals(item))
