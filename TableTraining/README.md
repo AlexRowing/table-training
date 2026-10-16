@@ -24,7 +24,7 @@ Attribution:
   <tr><td>Party</td><td>Adarsh</td><td>None</td></tr>
   <tr><td>PartyTest</td><td>Adarsh</td><td>None</td></tr>
   <tr><td>Seating</td><td>Adam</td><td>None</td></tr>
-  <tr><td>SeatingTest</td><td>Adam</td><td>None</td></tr>
+  <tr><td>SeatingTest</td><td>Sarah</td><td>None</td></tr>
   <tr><td>Main</td><td>Adam</td><td>None</td></tr>
   <tr><td>MainTest</td><td>Adam</td><td>None</td></tr>
   <tr><td>Display</td><td>Alex</td><td>None</td></tr>
