@@ -145,4 +145,19 @@ public class Seating
 
             }
             // Swap the found min with the current position
-     
+            Table temp = seatingArray.get(i);
+            seatingArray.set(i, seatingArray.get(minIndex));
+            seatingArray.set(minIndex, temp);
+        }
+        for (Table table : seatingArray)
+        {
+            Party party = compareParties(table.getNumSeats());
+            if (party != null)
+            {
+                table.setNumPeople(party.getSize());
+                table.setParty(party);
+                table.setEmpty(false);
+            }
+        }
+    }
+}

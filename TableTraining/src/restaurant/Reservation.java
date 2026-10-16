@@ -377,4 +377,9 @@ public class Reservation
     {
         if (a == null)
         {
-            retu
+            return b == null;
+        }
+        return a.equalsIgnoreCase(b);
+    }
+
+}

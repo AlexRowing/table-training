@@ -186,4 +186,16 @@ public class Table
      */
     public String toString()
     {
-        String status = "Em
+        String status = "Empty";
+        if (reserved)
+        {
+            status = "Reserved";
+        }
+        else if (!empty)
+        {
+            status = "Occupied";
+        }
+        return "Table " + tableID + ": " + numPeople + "/" + numSeats
+            + " seats, " + status;
+    }
+}
