@@ -247,7 +247,9 @@ public class Reservation
         Reservation other = (Reservation)obj;
         return reservationTime == other.reservationTime
             && getSize() == other.getSize()
-            && namesMatch(getName(), other.getName());
+            && namesMatch(
+                getName(),
+                other.getName()) && getHeldTable() == other.getHeldTable();
     }
 
 
@@ -278,8 +280,8 @@ public class Reservation
     @Override
     public String toString()
     {
-        String result =
-            getName() + " (party of " + getSize() + ") - " + getFormattedTime();
+        String result = getName() + " (reservation for " + getSize() + ") - "
+            + getFormattedTime();
         if (hasHeldTable())
         {
             result += " [table " + heldTable + " held]";
@@ -375,9 +377,4 @@ public class Reservation
     {
         if (a == null)
         {
-            return b == null;
-        }
-        return a.equalsIgnoreCase(b);
-    }
-
-}
+            retu

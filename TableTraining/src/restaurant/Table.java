@@ -14,6 +14,8 @@ public class Table
     private int timeSat;
     private boolean empty;
     private boolean reserved;
+    private Party[] partySat;
+    public String res;
 
     /**
      * Create a new Table object. The table starts empty, not reserved, with
@@ -38,9 +40,28 @@ public class Table
         timeSat = 0;
         empty = true;
         reserved = false;
+        partySat = new Party[1];
+    }
+    
+    public Party getParty() {
+        if (isEmpty()) {
+            return null;
+        }
+        return partySat[0];
+    }
+    
+    public void setParty(Party party) {
+        partySat[0] = party;
     }
 
-
+    /**
+     * gets the name of the reservation holding the table
+     * 
+     * @return res name of reservation
+     */
+    public String getName() {
+        return res;
+    }
     /**
      * Gets the id of the table
      *
@@ -146,11 +167,14 @@ public class Table
     /**
      * Updates whether the table is reserved
      *
+     * @param name to be assigned to reserved table
+     *
      * @param reserved
      *            - true if the table is reserved
      */
-    public void setReserved(boolean reserved)
+    public void setReserved(boolean reserved, String name)
     {
+        res = name;
         this.reserved = reserved;
     }
 
@@ -162,16 +186,4 @@ public class Table
      */
     public String toString()
     {
-        String status = "Empty";
-        if (reserved)
-        {
-            status = "Reserved";
-        }
-        else if (!empty)
-        {
-            status = "Occupied";
-        }
-        return "Table " + tableID + ": " + numPeople + "/" + numSeats
-            + " seats, " + status;
-    }
-}
+        String status = "Em

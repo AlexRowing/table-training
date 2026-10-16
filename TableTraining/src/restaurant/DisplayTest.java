@@ -301,7 +301,7 @@ public class DisplayTest
      */
     public void testTableAvailabilityReserved()
     {
-        display.getTable(1).setReserved(true);
+        display.getTable(1).setReserved(true, "");
         assertEquals(2, display.tableAvailability().getTableID());
     }
 
@@ -312,7 +312,7 @@ public class DisplayTest
     public void testTableAvailabilityNone()
     {
         display.setTableSeats(1, 4);
-        display.getTable(2).setReserved(true);
+        display.getTable(2).setReserved(true, "");
         assertNull(display.tableAvailability());
     }
 

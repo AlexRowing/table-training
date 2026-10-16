@@ -29,9 +29,13 @@ public class Seating
     }
 
 
-    public void addReservation(String name, int size, int hour, int minute)
+    public
+        void
+        addReservation(String name, int size, int hour, int minute, int TableID)
     {
         Party reservation = new Reservation(name, size, hour, minute);
+        Reservation res = (Reservation)reservation;
+        res.holdTable(TableID);
         waitList.add(reservation);
     }
 
@@ -64,30 +68,63 @@ public class Seating
     }
 
 
+    @SuppressWarnings("null")
     public Party compareParties(int size)
     {
+        Party party = null;
         for (int i = size; i > 0; i--)
         {
-            Party party = new Party("", -1);
             Node<Party> curr = waitList.getHead();
             while (curr != null)
             {
-                if (curr.data().getSize() == i)
+                if (!(curr.data() instanceof Reservation) && 
+                    curr.data().getSize() == i)
                 {
                     party = curr.data();
-                    return waitList.remove(party);
+                    party = waitList.remove(party);
+                    return party;
                 }
                 curr = curr.next();
             }
 
         }
-        throw new IllegalArgumentException("Invalid party size, try again");
+        return party;
     }
 
 
     public void seatTables(ArrayList<Table> tableArray)
     {
         ArrayList<Table> seatingArray = new ArrayList<Table>();
+        Node<Party> curr = waitList.getHead();
+        for (Table table : tableArray)
+        {
+            if (table.isEmpty() && table.isReserved())
+            {
+                while (curr != null)
+                {
+                    if (curr.data() instanceof Reservation)
+                    {
+                        Reservation res = (Reservation)curr.data();
+                        if (table.getTableID() == res.getHeldTable() && Main
+                            .getFormattedTime().equals(res.getFormattedTime()))
+                        {
+                            table.setNumPeople(res.getSize());
+                            table.setEmpty(false);
+                            try
+                            {
+                                table.setParty(waitList.remove(res));
+                            }
+                            catch (Exception e)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    curr = curr.next();
+                }
+            }
+        }
+
         for (Table table : tableArray)
         {
             if (table.isEmpty() && !table.isReserved())
@@ -105,25 +142,7 @@ public class Seating
                 {
                     minIndex = j;
                 }
-                Table temp = seatingArray.get(i);
-                seatingArray.set(i, seatingArray.get(minIndex));
-                seatingArray.set(minIndex, temp);
+
             }
             // Swap the found min with the current position
-
-        }
-        while (seatingArray.size() != 0)
-        {
-            for (Table table : seatingArray)
-            {
-                Party tempParty = compareParties(table.getNumSeats());
-                table.setNumPeople(tempParty.getSize());
-                table.setEmpty(false);
-                seatingArray.remove(seatingArray.indexOf(table));
-            }
-            break;
-
-        }
-    }
-
-}
+     

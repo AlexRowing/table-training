@@ -127,9 +127,9 @@ public class TableTest
      */
     public void testSetReserved()
     {
-        table.setReserved(true);
+        table.setReserved(true, "");
         assertTrue(table.isReserved());
-        table.setReserved(false);
+        table.setReserved(false, "");
         assertFalse(table.isReserved());
     }
 
@@ -159,7 +159,7 @@ public class TableTest
      */
     public void testToStringReserved()
     {
-        table.setReserved(true);
+        table.setReserved(true, "");
         assertEquals("Table 1: 0/4 seats, Reserved", table.toString());
     }
 }
