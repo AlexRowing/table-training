@@ -249,7 +249,7 @@ public class Reservation
             && getSize() == other.getSize()
             && namesMatch(
                 getName(),
-                other.getName()) && getHeldTable() == other.getHeldTable();
+                other.getName());
     }
 
 

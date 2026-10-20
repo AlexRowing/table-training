@@ -31,11 +31,11 @@ public class Seating
 
     public
         void
-        addReservation(String name, int size, int hour, int minute, int TableID)
+        addReservation(String name, int size, int hour, int minute, int tableID)
     {
         Party reservation = new Reservation(name, size, hour, minute);
         Reservation res = (Reservation)reservation;
-        res.holdTable(TableID);
+        res.holdTable(tableID);
         waitList.add(reservation);
     }
 

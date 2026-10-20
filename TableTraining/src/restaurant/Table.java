@@ -187,13 +187,14 @@ public class Table
     public String toString()
     {
         String status = "Empty";
-        if (reserved)
-        {
-            status = "Reserved";
-        }
-        else if (!empty)
+        
+        if (!empty)
         {
             status = "Occupied";
+        }
+        else if (reserved)
+        {
+            status = "Reserved";
         }
         return "Table " + tableID + ": " + numPeople + "/" + numSeats
             + " seats, " + status;
