@@ -815,10 +815,12 @@ public class Main
 
         if (userInput.equals("8"))
 
-        {   
-            for (Table table : display.getTables()) {
-                if (table.isEmpty() && table.isReserved()) {
-                    
+        {
+            for (Table table : display.getTables())
+            {
+                if (table.isEmpty() && table.isReserved())
+                {
+
                 }
             }
             passTime();
