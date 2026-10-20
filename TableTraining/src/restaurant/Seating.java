@@ -77,8 +77,8 @@ public class Seating
             Node<Party> curr = waitList.getHead();
             while (curr != null)
             {
-                if (!(curr.data() instanceof Reservation) && 
-                    curr.data().getSize() == i)
+                if (!(curr.data() instanceof Reservation)
+                    && curr.data().getSize() == i)
                 {
                     party = curr.data();
                     party = waitList.remove(party);
@@ -95,9 +95,11 @@ public class Seating
     public void seatTables(ArrayList<Table> tableArray)
     {
         ArrayList<Table> seatingArray = new ArrayList<Table>();
-        Node<Party> curr = waitList.getHead();
+        int currTime =
+            Reservation.toMinutes(Main.currentHour, Main.currentMinute);
         for (Table table : tableArray)
         {
+            Node<Party> curr = waitList.getHead();
             if (table.isEmpty() && table.isReserved())
             {
                 while (curr != null)
@@ -105,19 +107,21 @@ public class Seating
                     if (curr.data() instanceof Reservation)
                     {
                         Reservation res = (Reservation)curr.data();
-                        if (table.getTableID() == res.getHeldTable() && Main
-                            .getFormattedTime().equals(res.getFormattedTime()))
+                        if (table.getTableID() == res.getHeldTable()
+                            && res.isDue(currTime))
                         {
                             table.setNumPeople(res.getSize());
                             table.setEmpty(false);
                             try
                             {
                                 table.setParty(waitList.remove(res));
+
                             }
                             catch (Exception e)
                             {
-                                break;
+                                // Does nothing
                             }
+                            break;
                         }
                     }
                     curr = curr.next();

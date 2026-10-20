@@ -182,6 +182,12 @@ public class Main
     }
 
 
+    public String toMinutes()
+    {
+
+    }
+
+
     /** @return current time in the program */
     public String getTime()
     {
@@ -198,6 +204,7 @@ public class Main
     }
 
 
+    /** @return Formats the Time to be printed */
     public static String getFormattedTime()
     {
         String result = "";
@@ -543,6 +550,7 @@ public class Main
 
                 Node<Party> curr = seating.getWaitList().getHead();
                 ArrayList<Table> resTables = new ArrayList<Table>();
+                int compareRes = Reservation.toMinutes(resHour, resMinute);
                 for (Table table : display.getTables())
                 {
                     resTables.add(table);
@@ -554,10 +562,7 @@ public class Main
                         Reservation currRes = (Reservation)curr.data();
                         if (currRes.hasHeldTable())
                         {
-                            if (Math.abs(currRes.getHour() - resHour) < 1
-                                || Math.abs(currRes.getHour() - resHour) == 1
-                                    && Math.abs(
-                                        currRes.getMinute() - resMinute) == 0)
+                            if (Math.abs(currRes.getTime() - compareRes) < 60)
                             {
                                 for (Table table : resTables)
                                 {
