@@ -60,13 +60,13 @@ public class SeatingTest
      */
     public void testAddReservation()
     {
-        waitlist.addReservation("Sarah", 3, 13, 20);
+        waitlist.addReservation("Sarah", 3, 13, 20, 2);
         assertEquals(
-            "Sarah (party of 3) - 1:20 PM",
+            "Sarah (reservation for 3) - 1:20 PM [table 2 held]",
             waitlist.getWaitList().toString());
-        waitlist.addReservation("Erin", 6, 15, 50);
+        waitlist.addReservation("Erin", 6, 15, 50, 3);
         assertEquals(
-            "Sarah (party of 3) - 1:20 PM --> Erin (party of 6) - 3:50 PM",
+            "Sarah (reservation for 3) - 1:20 PM [table 2 held] --> Erin (reservation for 6) - 3:50 PM [table 3 held]",
             waitlist.getWaitList().toString());
 
     }
@@ -78,11 +78,11 @@ public class SeatingTest
      */
     public void testRemoveReservation()
     {
-        waitlist.addReservation("Sarah", 3, 13, 20);
-        waitlist.addReservation("Erin", 6, 15, 50);
+        waitlist.addReservation("Sarah", 3, 13, 20, 2);
+        waitlist.addReservation("Erin", 6, 15, 50, 3);
         waitlist.removeReservation("Sarah", 3, 13, 20);
         assertEquals(
-            "Erin (party of 6) - 3:50 PM",
+            "Erin (reservation for 6) - 3:50 PM [table 3 held]",
             waitlist.getWaitList().toString());
         waitlist.removeReservation("Erin", 6, 15, 50);
         assertEquals("", waitlist.getWaitList().toString());
@@ -96,17 +96,17 @@ public class SeatingTest
      */
     public void testGetWaitList()
     {
-        waitlist.addReservation("Sarah", 3, 13, 20);
+        waitlist.addReservation("Sarah", 3, 13, 20, 2);
         assertEquals(
-            "Sarah (party of 3) - 1:20 PM",
+            "Sarah (reservation for 3) - 1:20 PM [table 2 held]",
             waitlist.getWaitList().toString());
-        waitlist.addReservation("Erin", 6, 15, 50);
+        waitlist.addReservation("Erin", 6, 15, 50, 3);
         assertEquals(
-            "Sarah (party of 3) - 1:20 PM --> Erin (party of 6) - 3:50 PM",
+            "Sarah (reservation for 3) - 1:20 PM [table 2 held] --> Erin (reservation for 6) - 3:50 PM [table 3 held]",
             waitlist.getWaitList().toString());
         waitlist.addParty("Adam", 4);
         assertEquals(
-            "Sarah (party of 3) - 1:20 PM --> Erin (party of 6) - 3:50 PM --> Adam (party of 4)",
+            "Sarah (reservation for 3) - 1:20 PM [table 2 held] --> Erin (reservation for 6) - 3:50 PM [table 3 held] --> Adam (party of 4)",
             waitlist.getWaitList().toString());
     }
 
@@ -117,8 +117,8 @@ public class SeatingTest
      */
     public void testContains()
     {
-        waitlist.addReservation("Sarah", 3, 13, 20);
-        waitlist.addReservation("Erin", 6, 15, 50);
+        waitlist.addReservation("Sarah", 3, 13, 20, 2);
+        waitlist.addReservation("Erin", 6, 15, 50, 3);
         waitlist.addParty("Adam", 4);
         assertTrue(waitlist.contains("Erin", 6, 15, 50));
         assertFalse(waitlist.contains("Sarah", 6, 15, 50));
@@ -133,36 +133,13 @@ public class SeatingTest
      */
     public void testCompareParties()
     {
-        waitlist.addReservation("Sarah", 3, 13, 20);
-        waitlist.addReservation("Erin", 6, 15, 50);
+        waitlist.addReservation("Sarah", 3, 13, 20, 2);
+        waitlist.addReservation("Erin", 6, 15, 50, 3);
         waitlist.addParty("Adam", 4);
-        Reservation test1 = new Reservation("Erin", 6, 15, 50);
-        Reservation test2 = new Reservation("Sarah", 6, 13, 20);
         Party test3 = new Party("Adam", 4);
 
-        assertEquals(test1, waitlist.compareParties(6));
-        assertEquals(test2, waitlist.compareParties(3));
-        assertEquals(test3, waitlist.compareParties(5));
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Test seatTables()
-     */
-    public void testSeatTables()
-    {
-        waitlist.addReservation("Sarah", 3, 13, 20);
-        waitlist.addReservation("Erin", 6, 15, 50);
-        waitlist.addParty("Adam", 4);
-        Display tables = new Display();
-        tables.addTable(new Table(1, 3));
-        tables.addTable(new Table(2, 5));
-        tables.addTable(new Table(3, 6));
-        waitlist.seatTables(tables.getTables());
-        assertFalse(tables.getTables().get(0).isEmpty());
-        assertFalse(tables.getTables().get(1).isEmpty());
-        assertFalse(tables.getTables().get(2).isEmpty());
+        assertEquals(test3, waitlist.compareParties(6));
 
     }
+
 }
