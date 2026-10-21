@@ -135,6 +135,18 @@ public class Main
             }
             curr = curr.next();
         }
+        for (Table t : display.getTables())
+        {
+            if (t.getTimeSat() >= 60)
+            {
+                t.setEmpty(true);
+                t.setNumPeople(0);
+                t.setTimeSat(0);
+                System.out.println(
+                    "Table " + t.getTableID()
+                        + " has left and is now clear to be sat");
+            }
+        }
     }
 
 
