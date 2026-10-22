@@ -121,7 +121,7 @@ public class Display
 
 
     /**
-     * Prints a visual display of the tables to the console
+     * Prints a text display of the tables to the console
      */
     public void showTables()
     {
@@ -141,6 +141,296 @@ public class Display
             }
             System.out.println("[" + table.getTableID() + "] " + seats);
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Prints the tables in a visual format to the console STRETCH GOAL!
+     */
+    public void showTablesVisually()
+    {
+        String[] restaurant = new String[6];
+        String L1 = "|";
+        String buffer = "    ";
+        String W1 = "____";
+        int wScale;
+        int lScale;
+
+        String chairBuffer1 = " ";
+        String chairBuffer2 = "    ";
+        String chairBottom = "{_}";
+        String chairBack1 = "_";
+        String chairBack2 = "[_";
+        String chairBack3 = "_]";
+        String chairArm1 = "{ }";
+        String chairArm2 = "_";
+
+        int numChairTop = 0;
+        int numChairLeft = 0;
+        int numChairRight = 0;
+        int numChairBottom = 0;
+
+        for (int t = 0; t < 6; t++)
+        {
+            Table currentTableObject = getTables().get(t);
+            int seats = currentTableObject.getNumSeats();
+            boolean middleMarked = false;
+            boolean timeStampNext = false;
+            String middleMark = "";
+            String timeStamp = "   ";
+            if (currentTableObject.isReserved())
+            {
+                middleMark = "R  ";
+            }
+            else if (currentTableObject.isEmpty())
+            {
+                middleMark = "0/" + tableArray.get(t).getNumSeats();
+            }
+            else
+            {
+                middleMark = currentTableObject.getNumPeople() + "/"
+                    + currentTableObject.getNumSeats();
+                timeStamp = ":" + currentTableObject.getTimeSat();
+            }
+            // Table table = tableArray.get(0);
+            // int seats = table.getNumSeats();
+
+            // assign seats and table sizes for current table
+            if (seats == 2)
+            {
+                lScale = 2;
+                wScale = 2;
+                numChairTop = 0;
+                numChairBottom = 0;
+                numChairLeft = 1;
+                numChairRight = 1;
+            }
+            else if (seats <= 6)
+            {
+                lScale = 3;
+                wScale = 2;
+                numChairTop = 1;
+                numChairBottom = 1;
+                numChairRight = 1;
+                numChairLeft = 1;
+                if (seats == 3)
+                {
+                    numChairRight = 0;
+                }
+                else if (seats >= 5)
+                {
+                    wScale = 4;
+                    numChairTop = 2;
+                    numChairBottom = 2;
+                    if (seats == 5)
+                    {
+                        numChairBottom = 1;
+                    }
+                }
+            }
+            else if (seats <= 10)
+            {
+                lScale = 5;
+                wScale = 4;
+                numChairTop = 2;
+                numChairBottom = 2;
+                numChairLeft = 2;
+                numChairRight = 2;
+                if (seats == 7)
+                {
+                    numChairBottom = 1;
+                }
+                if (seats >= 9)
+                {
+                    wScale = 6;
+                    numChairBottom = 3;
+                    numChairTop = 3;
+                    if (seats == 9)
+                    {
+                        numChairTop = 2;
+                    }
+                }
+            }
+            else
+            {
+                lScale = 8;
+                wScale = 6;
+                numChairLeft = 3;
+                numChairRight = 3;
+                numChairTop = 3;
+                numChairBottom = 2;
+                if (seats == 12)
+                {
+                    numChairBottom = 3;
+                }
+
+            }
+
+            // Draw table with seats!
+            String currentTable = "";
+            // Top chairs
+
+            for (int i = 0; i < numChairTop; i++)
+                currentTable +=
+                    chairBuffer1 + "  " + chairBuffer2 + chairBack1 + " ";
+            currentTable += "\n";
+            for (int i = 0; i < numChairTop; i++)
+                currentTable += "  " + chairBuffer2 + chairArm1;
+
+            // Top edge
+            currentTable += "\n    ";
+
+            for (int i = 0; i < wScale; i++)
+            {
+                currentTable += W1;
+            }
+            currentTable += "\n";
+
+            // Sides
+            for (int i = 0; i < lScale; i++)
+            {
+                // Left chairs
+                if (i == 0 || i == 3 || i == 6)
+                {
+                    currentTable += " " + chairArm2 + " " + L1;
+                }
+                else if (i == 1 || i == 4 || i == 7)
+                {
+                    currentTable += chairBack2 + " " + L1;
+                }
+                else
+                {
+                    currentTable += "   " + L1;
+                }
+                for (int j = 0; j < wScale; j++)
+                {
+                    currentTable += buffer;
+                    if (timeStampNext)
+                    {
+                        currentTable += timeStamp + " ";
+                        if (seats >= 11)
+                        {
+                            currentTable += buffer + "   ";
+                        }
+                        else if (wScale >= 6)
+                        {
+                            currentTable += buffer + buffer + buffer;
+                        }
+                        else if (wScale >= 4)
+                        {
+                            currentTable += buffer + buffer;
+                        }
+                    }
+
+                    if (j == (wScale - 1) / 2)
+                    {
+                        if (i == (lScale) / 2)
+                        {
+                            currentTable += middleMark + " ";
+                            middleMarked = true;
+                            if (seats >= 11)
+                            {
+                                currentTable += buffer + "   ";
+                            }
+                            else if (wScale >= 6)
+                            {
+                                currentTable += buffer + buffer;
+                            }
+                            else if (wScale >= 4)
+                            {
+                                currentTable += buffer;
+                            }
+
+                        }
+                    }
+                    if (timeStampNext)
+                    {
+                        timeStampNext = false;
+                        break;
+                    }
+                    if (middleMarked)
+                    {
+                        middleMarked = false;
+                        timeStampNext = true;
+                        break;
+
+                    }
+                }
+
+                // Right chairs
+                currentTable += L1 + " ";
+                if ((i == 0 || i == 3 || i == 6) && numChairRight != 0)
+                {
+                    currentTable += chairArm2 + "\n";
+                }
+                else if ((i == 1 || i == 4 || i == 7) && numChairRight != 0)
+                {
+                    currentTable += chairBack3 + "\n";
+                }
+                else
+                {
+                    currentTable += "\n";
+                }
+            }
+
+            // Bottom edge
+            currentTable += "   |";
+            for (int i = 0; i < wScale; i++)
+            {
+                currentTable += W1;
+            }
+            currentTable += L1 + "\n\n";
+
+            // Bottom chairs
+            for (int i = 0; i < numChairBottom; i++)
+                currentTable += "  " + chairBuffer2 + chairBottom;
+
+            restaurant[t] = currentTable;
+        }
+
+        // Printing tables side by side with help of AI
+        String[] table1Lines = restaurant[0].split("\\r?\\n");
+        String[] table2Lines = restaurant[1].split("\\r?\\n");
+        String[] table3Lines = restaurant[2].split("\\r?\\n");
+
+        int maxHeight = Math.max(
+            table1Lines.length,
+            Math.max(table2Lines.length, table3Lines.length));
+        System.out.println(
+            "\u001B[33m1                         2                         3\u001B[0m");
+
+        for (int i = 0; i < maxHeight; i++)
+        {
+            String line1 = (i < table1Lines.length) ? table1Lines[i] : "";
+            String line2 = (i < table2Lines.length) ? table2Lines[i] : "";
+            String line3 = (i < table3Lines.length) ? table3Lines[i] : "";
+
+            System.out.printf("%-25s %-25s %-25s%n", line1, line2, line3);
+
+        }
+        System.out.println();
+
+        String[] table4Lines = restaurant[3].split("\\r?\\n");
+        String[] table5Lines = restaurant[4].split("\\r?\\n");
+        String[] table6Lines = restaurant[5].split("\\r?\\n");
+
+        int maxHeight2 = Math.max(
+            table4Lines.length,
+            Math.max(table5Lines.length, table6Lines.length));
+        System.out.println(
+            "\u001B[33m4                         5                         6\u001B[0m");
+
+        for (int i = 0; i < maxHeight2; i++)
+        {
+            String line1 = (i < table4Lines.length) ? table4Lines[i] : "";
+            String line2 = (i < table5Lines.length) ? table5Lines[i] : "";
+            String line3 = (i < table6Lines.length) ? table6Lines[i] : "";
+
+            System.out.printf("%-25s %-25s %-25s%n", line1, line2, line3);
+        }
+        System.out.println();
+
     }
 
 
