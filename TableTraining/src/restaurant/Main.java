@@ -70,6 +70,7 @@ public class Main
     public void run()
     {
         printTitle();
+        System.out.println("Hours of operation: 11:00 am - 10:00 pm");
         while (isOpen())
         {
             updateReservedTables();
@@ -239,7 +240,8 @@ public class Main
                 + "__|___|  /\\___  /\n" + "\u001B[31m" + "               \\"
                 + "\u001B[33m" + "/    \\/          \\/                  "
                 + "\u001B[35m" + "      " + "\u001B[34m"
-                + "\\/        \\/        " + "\u001B[35m" + "\\//_____/");
+                + "\\/        \\/        " + "\u001B[35m" + "\\//_____/"
+                + "\u001B[0m");
     }
 
 
