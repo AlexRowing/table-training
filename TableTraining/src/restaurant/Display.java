@@ -145,25 +145,22 @@ public class Display
 
 
     /**
-     * Combines two tables into one temporary table. The temporary table takes
-     * the id of the first table and the sum of both tables' seats
+     * Combines two tables into one. The combined table takes the lower id and
+     * the sum of both tables' seats. The original tables are kept so they can
+     * be separated later.
      *
      * @param tableID1
-     *            - id of the first table
+     *            id of the first table
      * @param tableID2
-     *            - id of the second table
-     * @return the temporary combined table
+     *            id of the second table
+     * @return the combined table
      * @throws IllegalArgumentException
-     *             if either table does not exist or the ids are the same
+     *             if the ids are the same or a table does not exist
      * @throws IllegalStateException
-     *             if tables are already combined
+     *             if either table is already combined
      */
     public Table combineTables(int tableID1, int tableID2)
     {
-        if (combinedTableArray != null)
-        {
-            throw new IllegalStateException("Tables are already combined");
-        }
         if (tableID1 == tableID2)
         {
             throw new IllegalArgumentException(
@@ -171,38 +168,98 @@ public class Display
         }
         Table first = getTable(tableID1);
         Table second = getTable(tableID2);
-        Table combined =
-            new Table(tableID1, first.getNumSeats() + second.getNumSeats());
-
-        combinedTableArray = new ArrayList<Table>();
-        for (Table table : tableArray)
+        if (first.isCombined() || second.isCombined())
         {
-            if (table != first && table != second)
-            {
-                combinedTableArray.add(table);
-            }
+            throw new IllegalStateException("Table is already combined");
         }
+        Table low = first;
+        Table high = second;
+        if (second.getTableID() < first.getTableID())
+        {
+            low = second;
+            high = first;
+        }
+        Table combined =
+            new Table(nextCombinedID(), low.getNumSeats() + high.getNumSeats());
+        combined.setParts(low, high);
+
+        if (combinedTableArray == null)
+        {
+            combinedTableArray = new ArrayList<Table>(tableArray);
+        }
+        combinedTableArray.remove(low);
+        combinedTableArray.remove(high);
         combinedTableArray.add(combined);
+        combinedTableArray.sort((a, b) -> a.getTableID() - b.getTableID());
         return combined;
     }
 
 
+    /** @return the smallest unused id above the original tables (7, 8, 9...) */
+    private int nextCombinedID()
+    {
+        int id = tableArray.size() + 1;
+        while (contains(id))
+        {
+            id++;
+        }
+        return id;
+    }
+
+
     /**
-     * Separates the temporary combined table back into the original tables
+     * Finds a table in the current list without throwing
      *
      * @param tableID
-     *            - id of the combined table
+     *            id of the table
+     * @return the table, or null if it is not in the current list
+     */
+    public Table findTable(int tableID)
+    {
+        for (Table table : getTables())
+        {
+            if (table.getTableID() == tableID)
+            {
+                return table;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Separates a combined table back into its two original tables. When no
+     * combined tables remain, the display goes back to the original list.
+     *
+     * @param tableID
+     *            id of the combined table
      * @throws IllegalArgumentException
      *             if the table is not combined
      */
     public void separateTables(int tableID)
     {
-        if (combinedTableArray == null || combinedTableArray
-            .get(combinedTableArray.size() - 1).getTableID() != tableID)
+        Table combined = getTable(tableID);
+        if (!combined.isCombined())
         {
             throw new IllegalArgumentException("Table is not combined");
         }
-        combinedTableArray = null;
+        combinedTableArray.remove(combined);
+        combinedTableArray.add(combined.getParts()[0]);
+        combinedTableArray.add(combined.getParts()[1]);
+        combinedTableArray.sort((a, b) -> a.getTableID() - b.getTableID());
+
+        boolean anyCombined = false;
+        for (Table t : combinedTableArray)
+        {
+            if (t.isCombined())
+            {
+                anyCombined = true;
+            }
+        }
+        if (!anyCombined)
+        {
+            combinedTableArray = null;
+        }
     }
 
 

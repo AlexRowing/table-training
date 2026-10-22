@@ -92,6 +92,45 @@ public class Seating
     }
 
 
+    /** @return true if any reservation holds the given table */
+    public boolean hasReservationOn(int tableID)
+    {
+        Node<Party> curr = waitList.getHead();
+        while (curr != null)
+        {
+            if (curr.data() instanceof Reservation
+                && ((Reservation)curr.data()).getHeldTable() == tableID)
+            {
+                return true;
+            }
+            curr = curr.next();
+        }
+        return false;
+    }
+
+
+    /** @return earliest reservation time (minutes) on either table, or -1 */
+    public int earliestReservationOn(int id1, int id2)
+    {
+        int earliest = -1;
+        Node<Party> curr = waitList.getHead();
+        while (curr != null)
+        {
+            if (curr.data() instanceof Reservation)
+            {
+                Reservation r = (Reservation)curr.data();
+                if ((r.getHeldTable() == id1 || r.getHeldTable() == id2)
+                    && (earliest == -1 || r.getTime() < earliest))
+                {
+                    earliest = r.getTime();
+                }
+            }
+            curr = curr.next();
+        }
+        return earliest;
+    }
+
+
     public void seatTables(ArrayList<Table> tableArray)
     {
         ArrayList<Table> seatingArray = new ArrayList<Table>();

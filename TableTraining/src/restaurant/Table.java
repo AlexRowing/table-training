@@ -16,6 +16,37 @@ public class Table
     private boolean reserved;
     private Party[] partySat;
     public String res;
+    private Table[] parts;
+
+    public boolean isCombined()
+    {
+        return parts != null;
+    }
+
+
+    public Table[] getParts()
+    {
+        return parts;
+    }
+
+
+    public void setParts(Table a, Table b)
+    {
+        parts = new Table[] { a, b };
+    }
+
+
+    /** @return "Table 2" or, for a combined table, "Table 7 (2+3)" */
+    public String getLabel()
+    {
+        if (parts == null)
+        {
+            return "Table " + tableID;
+        }
+        return "Table " + tableID + " (" + parts[0].getTableID() + "+"
+            + parts[1].getTableID() + ")";
+    }
+
 
     /**
      * Create a new Table object. The table starts empty, not reserved, with
@@ -42,26 +73,35 @@ public class Table
         reserved = false;
         partySat = new Party[1];
     }
-    
-    public Party getParty() {
-        if (isEmpty()) {
+
+
+    public Party getParty()
+    {
+        if (isEmpty())
+        {
             return null;
         }
         return partySat[0];
     }
-    
-    public void setParty(Party party) {
+
+
+    public void setParty(Party party)
+    {
         partySat[0] = party;
     }
+
 
     /**
      * gets the name of the reservation holding the table
      * 
      * @return res name of reservation
      */
-    public String getName() {
+    public String getName()
+    {
         return res;
     }
+
+
     /**
      * Gets the id of the table
      *
@@ -167,8 +207,8 @@ public class Table
     /**
      * Updates whether the table is reserved
      *
-     * @param name to be assigned to reserved table
-     *
+     * @param name
+     *            to be assigned to reserved table
      * @param reserved
      *            - true if the table is reserved
      */
@@ -187,16 +227,16 @@ public class Table
     public String toString()
     {
         String status = "Empty";
-        
+
         if (!empty)
         {
-            status = "Occupied";
+            status = "\u001B[31m" + "Occupied" + "\u001B[0m";
         }
         else if (reserved)
         {
-            status = "Reserved";
+            status = "\u001B[33m" + "Reserved" + "\u001B[0m";
         }
-        return "Table " + tableID + ": " + numPeople + "/" + numSeats
+        return getLabel() + ": " + numPeople + "/" + numSeats
             + " seats, " + status;
     }
 }

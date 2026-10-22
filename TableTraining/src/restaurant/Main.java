@@ -83,9 +83,9 @@ public class Main
              * Prints the menu of options for the user and checks if the user
              * input is within the options of the menu
              */
-            if (!choice.matches("[1-8]") && !choice.matches("cancel"))
+            if (!choice.matches("[1-9]") && !choice.matches("cancel"))
             {
-                System.out.println("Please enter a number from 1 to 8.");
+                System.out.println("Please enter a number from 1 to 9.");
 
             }
         }
@@ -116,11 +116,83 @@ public class Main
     /** updates the table objects isReserved method */
     private void updateReservedTables()
     {
+        int now = Reservation.toMinutes(currentHour, currentMinute);
+        ArrayList<Integer> toSeparate = new ArrayList<Integer>();
+
+        // 1. auto-clear tables that have been sat for 60 minutes
+        for (Table t : display.getTables())
+        {
+            if (t.getTimeSat() >= 60)
+            {
+                t.setEmpty(true);
+                t.setNumPeople(0);
+                t.setTimeSat(0);
+                if (t.isCombined() && !seating.hasReservationOn(t.getTableID()))
+                {
+                    toSeparate.add(t.getTableID());
+                    System.out.println(
+                        t.getLabel() + " has left and is now separated");
+                }
+                else
+                {
+                    System.out.println(
+                        t.getLabel() + " has left and is now clear to be sat");
+                }
+            }
+        }
+
+        // 2. empty combined tables with no reservation of their own
+        for (Table t : display.getTables())
+        {
+            if (t.isCombined() && t.isEmpty()
+                && !toSeparate.contains(t.getTableID())
+                && !seating.hasReservationOn(t.getTableID()))
+            {
+                int earliest = seating.earliestReservationOn(
+                    t.getParts()[0].getTableID(),
+                    t.getParts()[1].getTableID());
+                if (earliest != -1)
+                {
+                    int until = earliest - now;
+                    if (until == 60)
+                    {
+                        Party p = seating.compareParties(t.getNumSeats());
+                        if (p != null)
+                        {
+                            t.setNumPeople(p.getSize());
+                            t.setParty(p);
+                            t.setEmpty(false);
+                            System.out.println(
+                                "Party for " + p.getSize()
+                                    + " was automatically sat at "
+                                    + t.getLabel());
+                        }
+                        else
+                        {
+                            toSeparate.add(t.getTableID());
+                            System.out.println(
+                                t.getLabel() + " had no walk-in to seat and "
+                                    + "is now separated");
+                        }
+                    }
+                    else if (until < 60)
+                    {
+                        toSeparate.add(t.getTableID());
+                        System.out.println(t.getLabel() + " is now separated");
+                    }
+                }
+            }
+        }
+        for (int id : toSeparate)
+        {
+            display.separateTables(id);
+        }
+
+        // 3. wipe flags, 4. rebuild them
         for (Table t : display.getTables())
         {
             t.setReserved(false, null);
         }
-        int now = Reservation.toMinutes(currentHour, currentMinute);
         Node<Party> curr = seating.getWaitList().getHead();
         while (curr != null)
         {
@@ -129,23 +201,14 @@ public class Main
                 Reservation r = (Reservation)curr.data();
                 if (r.hasHeldTable() && r.minutesUntil(now) <= 60)
                 {
-                    display.getTable(r.getHeldTable())
-                        .setReserved(true, r.getName());
+                    Table held = display.findTable(r.getHeldTable());
+                    if (held != null)
+                    {
+                        held.setReserved(true, r.getName());
+                    }
                 }
             }
             curr = curr.next();
-        }
-        for (Table t : display.getTables())
-        {
-            if (t.getTimeSat() >= 60)
-            {
-                t.setEmpty(true);
-                t.setNumPeople(0);
-                t.setTimeSat(0);
-                System.out.println(
-                    "Table " + t.getTableID()
-                        + " has left and is now clear to be sat");
-            }
         }
     }
 
@@ -184,6 +247,7 @@ public class Main
                 + "| 6. Clear Table             |\n"
                 + "| 7. Seat Table              |\n"
                 + "| 8. Pass Time               |\n"
+                + "| 9. Combine Tables          |\n"
                 + " ---------------------------- ");
     }
 
@@ -264,6 +328,76 @@ public class Main
     public Display getDisplay()
     {
         return display;
+    }
+
+
+    /**
+     * Asks for a table id until an existing one is entered
+     *
+     * @param prompt
+     *            the question to ask
+     * @return the table id, or -1 if the user typed cancel
+     */
+    private int askTableID(String prompt)
+    {
+        System.out.println(prompt);
+        while (true)
+        {
+            String text = input.nextLine().trim();
+            if (isCancel(text))
+            {
+                return -1;
+            }
+            try
+            {
+                int id = Integer.parseInt(text);
+                if (display.contains(id))
+                {
+                    return id;
+                }
+                System.out.println("Table id doesnt exist please try again");
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("Please enter a valid table id");
+            }
+        }
+    }
+
+
+    /**
+     * Checks whether two tables can be combined
+     *
+     * @param id1
+     *            first table id
+     * @param id2
+     *            second table id
+     * @return the reason they can't be combined, or null if they can
+     */
+    private String combineProblem(int id1, int id2)
+    {
+        if (id1 == id2)
+        {
+            return "Please choose two different tables";
+        }
+        Table a = display.getTable(id1);
+        Table b = display.getTable(id2);
+        if (a.isCombined() || b.isCombined())
+        {
+            return "A combined table can not be combined again";
+        }
+        if (!a.isEmpty() || !b.isEmpty())
+        {
+            return "Both tables must be empty to be combined";
+        }
+        int earliest = seating.earliestReservationOn(id1, id2);
+        int now = Reservation.toMinutes(currentHour, currentMinute);
+        if (earliest != -1 && earliest - now < 120)
+        {
+            return "One of those tables has a reservation less than 2 hours "
+                + "away. Try different tables";
+        }
+        return null;
     }
 
 
@@ -647,7 +781,21 @@ public class Main
                 int compareRes = Reservation.toMinutes(resHour, resMinute);
                 for (Table table : display.getTables())
                 {
-                    resTables.add(table);
+                    boolean usable = true;
+                    if (table.isCombined())
+                    {
+                        int earliest = seating.earliestReservationOn(
+                            table.getParts()[0].getTableID(),
+                            table.getParts()[1].getTableID());
+                        if (earliest != -1 && compareRes > earliest - 60)
+                        {
+                            usable = false;
+                        }
+                    }
+                    if (usable)
+                    {
+                        resTables.add(table);
+                    }
                 }
                 while (curr != null)
                 {
@@ -937,7 +1085,8 @@ public class Main
                     }
                     continue;
                 }
-                if (display.getTable(tableNum).isEmpty())
+                if (display.getTable(tableNum).isEmpty()
+                    && !display.getTable(tableNum).isCombined())
                 {
                     System.out
                         .println("Table is already empty. Please try again");
@@ -950,10 +1099,26 @@ public class Main
                 }
                 valid = true;
             }
-            display.getTable(tableNum).setEmpty(true);
-            display.getTable(tableNum).setNumPeople(0);
+            Table cleared = display.getTable(tableNum);
+            cleared.setEmpty(true);
+            cleared.setNumPeople(0);
             display.resetTableTime(tableNum);
-            System.out.println("\nClearing table " + tableNum);
+            System.out.println("\nClearing " + cleared.getLabel());
+            if (cleared.isCombined())
+            {
+                if (seating.hasReservationOn(tableNum))
+                {
+                    System.out.println(
+                        cleared.getLabel()
+                            + " has a reservation and stays combined");
+                }
+                else
+                {
+                    System.out
+                        .println(cleared.getLabel() + " has been separated");
+                    display.separateTables(tableNum);
+                }
+            }
 
         }
         // if (table.isEmpty() && table.isReserved()) {
@@ -961,25 +1126,31 @@ public class Main
         // }
         if (userInput.equals("7"))
         {
-
-            seating.seatTables(display.getTables());
-
+            ArrayList<Table> wasEmpty = new ArrayList<Table>();
             for (Table table : display.getTables())
             {
-                if (!table.isEmpty() && table.getTimeSat() == 0)
+                if (table.isEmpty())
+                {
+                    wasEmpty.add(table);
+                }
+            }
+            seating.seatTables(display.getTables());
+            for (Table table : wasEmpty)
+            {
+                if (!table.isEmpty())
                 {
                     if (table.getParty() instanceof Reservation)
                     {
                         System.out.println(
                             "Reservation under "
                                 + ((Reservation)table.getParty()).getName()
-                                + " sat at table " + table.getTableID());
+                                + " sat at " + table.getLabel());
                     }
                     else
                     {
                         System.out.println(
-                            "Party for " + table.getNumPeople()
-                                + " was sat at Table " + table.getTableID());
+                            "Party for " + table.getNumPeople() + " was sat at "
+                                + table.getLabel());
                     }
                 }
             }
@@ -995,6 +1166,31 @@ public class Main
                 "\n10 minutes have passed. What would you like to do?");
         }
 
+        if (userInput.equals("9"))
+        {
+            int id1 = askTableID("What is the first table to combine?");
+            if (id1 == -1)
+            {
+                return "cancel";
+            }
+            int id2 = askTableID("What is the second table to combine?");
+            if (id2 == -1)
+            {
+                return "cancel";
+            }
+            String problem = combineProblem(id1, id2);
+            if (problem != null)
+            {
+                System.out.println("\n" + problem);
+            }
+            else
+            {
+                Table combined = display.combineTables(id1, id2);
+                System.out.println(
+                    "\n" + combined.getLabel() + " is now combined ("
+                        + combined.getNumSeats() + " seats)");
+            }
+        }
         return userInput;
     }
 
