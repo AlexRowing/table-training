@@ -1,7 +1,10 @@
-Table Training is a Host Training application that allows the user to become more accustomed to the role of a Host. The user can add and remove parties and reservations from the wait list, as well as seat, clear, and combine tables!
+Reflection:
 
-Compile and Run Instructions:
-To run Table Training, navigate to the Main class and click run in Eclipse. From there console instructions will be printed to help the user interact with the application!
+After writing our classes, we needed to change a few aspects of our spec. One change was to include a .equals() method for both the party and reservation classes in order to properly compare the nodes in the waitlist (LinkedChain). Another change was to add a name parameter to the Party Object and a fitsAt() method. Specifically in the LinkedChain class, one change was to implement a setNext() and setData() method in order to properly add and remove nodes from the chain. Furthermore, the grey area around writing methods in the LinkedChain class is no longer an unknown as we successfully implemented those methods. While we did not have time to code our stretch goals this week, after team discussion, we are more aware the plan for combining and displaying tables in the future. Currently, most MVP features have all been reached and test cases have been written for each public method in the LinkedChain, Node, Table, and Display classes. 
+
+Next Steps:
+
+To finish the MVP, we need to write test cases for 3 more classes: Seating, Main, Party and Reservation. These will be completed by Adam and Adarsh. Afterwards our team can focus on stretch goals. Specifically implementing the display tables and combining tables which will take place in the Display and Table classes. We may end up dropping the restaurant rush hour simulation if the other two stretch goals are not met. For these next steps, we will need to included J-unit tests to verify that the string (display) for the tables are equal to our goal and tests to verify the number of tables available changes when tables are combined. While Alex is in charge of the Table and Display classes, our group can work together to brainstorm methods to be used for those stretch goals. 
 
 Attribution:
 *AI was used to make table format using HTML*
@@ -24,7 +27,7 @@ Attribution:
   <tr><td>SeatingTest</td><td>Sarah</td><td>None</td></tr>
   <tr><td>Main</td><td>Adam</td><td>None</td></tr>
   <tr><td>MainTest</td><td>Adam</td><td>None</td></tr>
-  <tr><td>Display</td><td>Alex and Sarah</td><td>Used AI to order tables</td></tr>
+  <tr><td>Display</td><td>Alex</td><td>None</td></tr>
   <tr><td>DisplayTest</td><td>Alex</td><td>None</td></tr>
   <tr><td>Table</td><td>Alex</td><td>None</td></tr>
   <tr><td>TableTest</td><td>Alex</td><td>None</td></tr>

@@ -150,8 +150,7 @@ public class Display
      */
     public void showTablesVisually()
     {
-        ArrayList<String> restaurant = new ArrayList<String>();
-        ArrayList<Integer> tableIDs = new ArrayList<Integer>();
+        String[] restaurant = new String[6];
         String L1 = "|";
         String buffer = "    ";
         String W1 = "____";
@@ -171,53 +170,28 @@ public class Display
         int numChairLeft = 0;
         int numChairRight = 0;
         int numChairBottom = 0;
-        int seats = 0;
 
-        int currentArraySize = tableArray.size();
-        ArrayList<Table> currentArray = tableArray;
-        if (combinedTableArray != null)
+        for (int t = 0; t < 6; t++)
         {
-            currentArraySize = combinedTableArray.size();
-            currentArray = combinedTableArray;
-        }
-
-        for (int t = 0; t < currentArraySize; t++)
-        {
-            Table currentTableObject = currentArray.get(t);
-            if (currentTableObject == null)
-            {
-                continue;
-            }
-            tableIDs.add(currentTableObject.getTableID());
-            seats = currentTableObject.getNumSeats();
+            Table currentTableObject = getTables().get(t);
+            int seats = currentTableObject.getNumSeats();
             boolean middleMarked = false;
             boolean timeStampNext = false;
-            String middleMark = "    ";
+            String middleMark = "";
             String timeStamp = "   ";
             if (currentTableObject.isReserved())
             {
-                middleMark = "R    ";
+                middleMark = "R  ";
+            }
+            else if (currentTableObject.isEmpty())
+            {
+                middleMark = "0/" + tableArray.get(t).getNumSeats();
             }
             else
             {
-                if (currentTableObject.isEmpty())
-                {
-                    middleMark = "0/" + currentTableObject.getNumSeats();
-                }
-                else
-                {
-                    middleMark = currentTableObject.getNumPeople() + "/"
-                        + currentTableObject.getNumSeats();
-                    timeStamp = ":" + currentTableObject.getTimeSat();
-                }
-                if (currentTableObject.getNumSeats() % 10 > 4)
-                {
-                    middleMark += " ";
-                }
-                if (currentTableObject.getNumPeople() < 10)
-                {
-                    middleMark += " ";
-                }
+                middleMark = currentTableObject.getNumPeople() + "/"
+                    + currentTableObject.getNumSeats();
+                timeStamp = ":" + currentTableObject.getTimeSat();
             }
             // Table table = tableArray.get(0);
             // int seats = table.getNumSeats();
@@ -337,11 +311,11 @@ public class Display
                         currentTable += timeStamp + " ";
                         if (seats >= 11)
                         {
-                            currentTable += buffer + buffer + buffer + "    ";
+                            currentTable += buffer + "   ";
                         }
                         else if (wScale >= 6)
                         {
-                            currentTable += buffer + buffer + buffer + "    ";
+                            currentTable += buffer + buffer + buffer;
                         }
                         else if (wScale >= 4)
                         {
@@ -349,24 +323,23 @@ public class Display
                         }
                     }
 
-                    if (j == 0)
+                    if (j == (wScale - 1) / 2)
                     {
                         if (i == (lScale) / 2)
                         {
-                            currentTable += middleMark;
+                            currentTable += middleMark + " ";
                             middleMarked = true;
                             if (seats >= 11)
                             {
-                                currentTable += buffer + "           ";
+                                currentTable += buffer + "   ";
                             }
                             else if (wScale >= 6)
                             {
-                                currentTable += buffer + "           ";
+                                currentTable += buffer + buffer;
                             }
                             else if (wScale >= 4)
                             {
-                                currentTable += "       ";
-
+                                currentTable += buffer;
                             }
 
                         }
@@ -413,22 +386,19 @@ public class Display
             for (int i = 0; i < numChairBottom; i++)
                 currentTable += "  " + chairBuffer2 + chairBottom;
 
-            restaurant.add(currentTable);
+            restaurant[t] = currentTable;
         }
 
         // Printing tables side by side with help of AI
-        String[] table1Lines = restaurant.get(0).split("\\r?\\n");
-        String[] table2Lines = restaurant.get(1).split("\\r?\\n");
-        String[] table3Lines = restaurant.get(2).split("\\r?\\n");
+        String[] table1Lines = restaurant[0].split("\\r?\\n");
+        String[] table2Lines = restaurant[1].split("\\r?\\n");
+        String[] table3Lines = restaurant[2].split("\\r?\\n");
 
         int maxHeight = Math.max(
             table1Lines.length,
             Math.max(table2Lines.length, table3Lines.length));
         System.out.println(
-            "\u001B[33m" + tableIDs.get(0)
-                + "                                     " + tableIDs.get(1)
-                + "                                   " + tableIDs.get(2)
-                + "\u001B[0m");
+            "\u001B[33m1                         2                         3\u001B[0m");
 
         for (int i = 0; i < maxHeight; i++)
         {
@@ -436,69 +406,28 @@ public class Display
             String line2 = (i < table2Lines.length) ? table2Lines[i] : "";
             String line3 = (i < table3Lines.length) ? table3Lines[i] : "";
 
-            System.out.printf("%-35s %-35s %-35s%n", line1, line2, line3);
+            System.out.printf("%-25s %-25s %-25s%n", line1, line2, line3);
 
         }
         System.out.println();
-        String[] table4Lines = null;
-        String[] table5Lines = null;
-        String[] table6Lines = null;
-        if (restaurant.size() > 3)
-        {
-            table4Lines = restaurant.get(3).split("\\r?\\n");
-        }
-        if (restaurant.size() > 4)
-        {
-            table5Lines = restaurant.get(4).split("\\r?\\n");
 
-        }
-        if (restaurant.size() > 5)
-        {
-            table6Lines = restaurant.get(5).split("\\r?\\n");
-        }
+        String[] table4Lines = restaurant[3].split("\\r?\\n");
+        String[] table5Lines = restaurant[4].split("\\r?\\n");
+        String[] table6Lines = restaurant[5].split("\\r?\\n");
 
-        int maxHeight2 = 0;
-        if (restaurant.size() == 6)
-        {
-            maxHeight2 = Math.max(
-                table4Lines.length,
-                Math.max(table5Lines.length, table6Lines.length));
-            System.out.println(
-                "\u001B[33m" + tableIDs.get(3)
-                    + "                                     " + tableIDs.get(4)
-                    + "                                   " + tableIDs.get(5)
-                    + "\u001B[0m");
-
-        }
-        else if (restaurant.size() == 5)
-        {
-            maxHeight2 = Math.max(table4Lines.length, table5Lines.length);
-            System.out.println(
-                "\u001B[33m" + tableIDs.get(3)
-                    + "                                     " + tableIDs.get(4)
-                    + "\u001B[0m");
-        }
-        else if (restaurant.size() == 4)
-        {
-            maxHeight2 = table4Lines.length;
-            System.out.println("\u001B[33m" + tableIDs.get(3) + "\u001B[0m");
-
-        }
-
-        String line1 = "";
-        String line2 = "";
-        String line3 = "";
+        int maxHeight2 = Math.max(
+            table4Lines.length,
+            Math.max(table5Lines.length, table6Lines.length));
+        System.out.println(
+            "\u001B[33m4                         5                         6\u001B[0m");
 
         for (int i = 0; i < maxHeight2; i++)
         {
-            if (restaurant.size() > 3)
-                line1 = (i < table4Lines.length) ? table4Lines[i] : "";
-            if (restaurant.size() > 4)
-                line2 = (i < table5Lines.length) ? table5Lines[i] : "";
-            if (restaurant.size() > 5)
-                line3 = (i < table6Lines.length) ? table6Lines[i] : "";
+            String line1 = (i < table4Lines.length) ? table4Lines[i] : "";
+            String line2 = (i < table5Lines.length) ? table5Lines[i] : "";
+            String line3 = (i < table6Lines.length) ? table6Lines[i] : "";
 
-            System.out.printf("%-35s %-35s %-35s%n", line1, line2, line3);
+            System.out.printf("%-25s %-25s %-25s%n", line1, line2, line3);
         }
         System.out.println();
 
