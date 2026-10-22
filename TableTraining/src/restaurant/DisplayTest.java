@@ -440,4 +440,5 @@ public class DisplayTest
         display.combineTables(1, 2);
         assertEquals(6, display.totalSeats());
     }
+    
 }

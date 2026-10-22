@@ -74,7 +74,7 @@ public class Main
         {
             updateReservedTables();
             System.out.println();
-            System.out.println(display.toString());
+            display.showTablesVisually();
             System.out.println("Current time: " + getFormattedTime());
             printMenu();
             System.out.print("Choose an option: ");
