@@ -1,3 +1,4 @@
+# Table Training
 Table Training is a Host Training application that allows the user to become more accustomed to the role of a Host. The user can add and remove parties and reservations from the wait list, as well as seat, clear, and combine tables!
 
 Compile and Run Instructions:
